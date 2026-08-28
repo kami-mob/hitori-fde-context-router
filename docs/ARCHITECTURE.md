@@ -13,11 +13,14 @@ Typical failure modes include:
 - reading unrelated domains unnecessarily
 - treating a stale state summary as absolute truth
 - failing to load safety rules when a risky condition actually applies
+- answering from conversational memory or summaries even though the user explicitly requested a specific saved source
 
 ## Architecture
 
 ```text
 User Request
+    ↓
+0. Explicit Source Read Gate (conditional)
     ↓
 1. Resolution Kernel
     ↓
@@ -30,6 +33,24 @@ User Request
     ↓
 5. Re-sync / Writeback when material
 ```
+
+## 0. Explicit Source Read Gate
+
+When the user explicitly designates a repository, file, document, saved post, or other source, that designation becomes a retrieval requirement.
+
+The system should:
+
+- actually search/fetch/read the designated source before making claims presented as grounded in it
+- not substitute conversation history, project summaries, cached context, or model memory as if the source had been read
+- return `VERIFY` / `UNKNOWN` for source-dependent claims when the required source cannot be accessed, found, or read
+- preserve bounded retrieval instead of expanding into unrelated COLD history
+- carry the source designation across continuation turns for the same work item unless the user changes it
+- respect AND / OR semantics when multiple sources are specified
+- respect explicit constraints such as "use only this attachment" or "do not read external sources"
+
+This gate has priority over the normal `read little` optimization. It does not mean "read everything"; it means the user's explicitly selected evidence must not be silently replaced by a more convenient source.
+
+See [`SOURCE_READ_GATE.md`](SOURCE_READ_GATE.md) for the full public contract.
 
 ## 1. Resolution Kernel
 
@@ -84,6 +105,8 @@ Examples:
 - completed migration logs
 - unrelated project history
 
+An explicit source read that is directly required by the user's request is not treated as a broad COLD sweep merely because that source would not otherwise be loaded by default.
+
 ## 3. Safety independence
 
 Safety is not a successful-resolution side effect.
@@ -110,6 +133,7 @@ Re-sync to canonical state when the user asks for, or the task reaches, a materi
 - production change
 - permission change
 - price / specification / version change
+- continuation of a task that explicitly designated a saved source
 
 ## 5. Writeback
 
