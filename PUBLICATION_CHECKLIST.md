@@ -54,18 +54,18 @@ Current-tree correction completed:
 
 The 5-pass re-evaluation found that the old synthetic fixture values were still visible in commits reachable from `main`, even though the current tree was already corrected.
 
-A public Git repository's reachable branch history is part of its publication surface. Therefore current-tree correction alone is not considered sufficient.
+A public Git repository's reachable branch history is part of its publication surface. Therefore current-tree correction alone was not considered sufficient.
 
-Remediation requirement:
+Remediation completed:
 
-- [ ] rebuild `main` from a clean ancestor before the offending fixture commit, using the current sanitized tree
-- [ ] force-update `main` to the rebuilt commit so the offending fixture commits are no longer reachable from the public branch
-- [ ] verify the `main` commit chain no longer contains the offending fixture commit
-- [ ] verify current tree still contains only fictional fixture values
-- [ ] verify commit metadata privacy on the rebuilt head
-- [ ] re-run public CI on the rebuilt history
+- [x] rebuilt `main` from clean ancestor `9268f423c472bb03e6238b7191fe3d23ec59f875`, before the offending fixture commit, using the current sanitized tree
+- [x] force-updated `main` to rebuilt commit `c0c6dcce5dff63c2f735616e397670aa77bfc0a5`
+- [x] verified the `reference/sample_decisions.json` commit chain reachable from `main` contains only the rebuilt clean commit and no offending fixture commit
+- [x] verified current tree contains only fictional fixture values (`100`, `200`, `50`)
+- [x] verified the rebuilt head uses GitHub `users.noreply.github.com` commit metadata
+- [x] re-ran public CI on the rebuilt history successfully
 
-Until the items above pass, publication state is `PUBLIC_SYNC_PENDING_HISTORY_REWRITE`.
+The offending fixture commits are no longer reachable from `main`. This incident involved ordinary numeric sample values, not credentials, tokens, PII, customer data, or authentication material; therefore secret rotation or credential invalidation was not applicable.
 
 Sensitive-term searches found no matches for checked private project/repository markers, internal decision ID markers, or the private email marker in the current tree.
 
@@ -88,19 +88,20 @@ The repository contains enough material for a third party to inspect the technic
 
 ## Publication policy audit
 
-Current public content was checked against the applicable publication boundaries:
+Current public content and reachable `main` history were checked against the applicable publication boundaries:
 
 - [x] security/confidentiality boundary
 - [x] public GitHub Why / What / Evidence boundary
 - [x] claim accuracy / non-claims
 - [x] public-vs-private implementation distinction
 - [x] synthetic-data boundary for current tree
+- [x] synthetic-data boundary for reachable `main` history
 - [x] commercial boundary
 - [x] commit metadata privacy
 - [x] public CI
-- [ ] reachable `main` history boundary
+- [x] reachable `main` history boundary
 
-Audit result until history rewrite completes: **PENDING_HISTORY_REWRITE**.
+Audit result: **PASS**.
 
 ## Ongoing public evidence synchronization gate
 
@@ -153,20 +154,22 @@ The public Source Read Gate material documents the behavioral contract and evide
 - [x] Description configured
 - [x] private project/repository marker search re-run after Source Read Gate update
 - [x] synthetic fixture/private-value collision corrected in current tree
-- [ ] offending synthetic fixture commits removed from reachable `main` history
+- [x] offending synthetic fixture commits removed from reachable `main` history
+- [x] post-history-rewrite Reference Resolver Tests workflow succeeded
 - [x] ongoing public evidence synchronization gate documented
 - [x] publication/content-policy review is part of the ongoing synchronization gate
-- [ ] promotion status restored to public-ready after history rewrite verification
+- [x] promotion status restored to public-ready after history rewrite verification
 
 ## Current status
 
-**PUBLIC_SYNC_PENDING_HISTORY_REWRITE**
+**PUBLIC_V0_1_READY**
 
 Validation date: 2026-08-29
-Policy audit: **PENDING_HISTORY_REWRITE**
-Current-tree CI: **Reference Resolver Tests — SUCCESS**
+Policy audit: **PASS**
+Reachable-history audit: **PASS**
+Post-history-rewrite CI: **Reference Resolver Tests — SUCCESS**
 
-The synthetic-value correction does not change the public Python resolver or its expected deterministic result (`7/7 PASS`).
+The synthetic-value correction and history rebuild do not change the public Python resolver or its expected deterministic result (`7/7 PASS`).
 
 ### Non-blocking discoverability item
 
