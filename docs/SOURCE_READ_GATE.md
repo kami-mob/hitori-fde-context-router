@@ -91,11 +91,31 @@ Result: **P1–P5 PASS**.
 
 These are sanitized aggregate results. They do not expose workspace-specific sources, project names, paths, or production configuration.
 
+## Reference implementation
+
+[`reference/source_read_gate.py`](../reference/source_read_gate.py) is a dependency-free, pure/local model of the contract above. Given a declared source requirement and a `read_log` of what was actually read, `evaluate()` returns a deterministic outcome:
+
+- `NOT_APPLICABLE` — no explicit source is in force for this turn
+- `PASS` — the requirement is satisfied by `read_log`
+- `VERIFY` — required evidence has not been read yet, or an explicit no-external-read constraint blocks the one remaining read that would be needed. Evidence already present in `read_log` still counts even under the constraint: `no_external_read` blocks a *new* prohibited retrieval, it does not retract a read that already happened.
+- `UNKNOWN` — the requirement can never be satisfied given `unavailable_sources`. In `mode="ALL"` this means *at least one* required source is unavailable (one missing link breaks the whole requirement); in `mode="ANY"` it means *every* candidate source is unavailable (no candidate remains that could ever satisfy it).
+- `DATA_ERROR` — the *effective* request is malformed. Only the source requirement actually in force this turn is validated — a current declaration overriding a continuation, or a continuation whose source changed, is not blocked by stale/invalid data left over in the other (inactive) field set.
+
+The function also models AND/OR semantics (`mode="ALL"` / `mode="ANY"`), continuation carryover across turns, the no-external-read constraint, and surfaces unnecessary reads outside the declared requirement (`extra_reads`) without blocking on them, matching the bounded-retrieval rule.
+
+Run locally:
+
+```bash
+python -m unittest discover -s tests -p test_source_read_gate.py
+```
+
+Expected result: all tests pass, including the existing `minimal_resolver` regression cases re-run from within that suite.
+
 ## Public implementation boundary
 
-The dependency-free Python resolver in this repository demonstrates **decision resolution**, not external connector I/O.
+The dependency-free Python resolver and the source-read gate model in this repository demonstrate **decision resolution** and **gate-outcome logic**, not external connector I/O.
 
-This document publishes the source-read contract and its validation evidence, but the public minimal resolver does not fetch GitHub, Drive, or other external systems and therefore does not independently enforce this gate.
+This document publishes the source-read contract and its validation evidence, but neither the minimal resolver nor `source_read_gate.py` fetches GitHub, Drive, or other external systems. Whether a designated source was actually read is supplied to `evaluate()` by the caller (`read_log`); this module does not perform or verify the read itself, so it does not independently enforce the gate end-to-end.
 
 See also:
 
