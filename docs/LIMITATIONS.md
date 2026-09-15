@@ -18,18 +18,24 @@ Explicit resolution, source-read gates, and fail-closed states reduce some class
 - every safety condition is detected without suitable metadata or rules
 - every model follows an instruction perfectly
 
-## The public minimal resolver does not perform external source I/O
+## The public reference code does not perform external source I/O
 
-The dependency-free Python resolver in this repository demonstrates the **decision-resolution contract**.
+This repository now contains two dependency-free Python reference models:
 
-It does **not**:
+- `reference/minimal_resolver.py` demonstrates the **decision-resolution contract**.
+- `reference/source_read_gate.py` demonstrates **pure/local Source Read Gate outcome logic** from caller-supplied request metadata and `read_log`.
+
+They do **not**:
 
 - connect to external repositories or document stores
 - fetch a user-designated document
-- verify that an external source was actually read
-- enforce continuation-turn source carryover at the product integration layer
+- independently verify that an external source was actually read
+- detect every product-level continuation/source designation automatically
+- enforce the Source Read Gate end-to-end at the connector or product integration layer
 
-The Explicit Source Read Gate published in [`SOURCE_READ_GATE.md`](SOURCE_READ_GATE.md) is therefore an architecture/operating contract plus sanitized validation evidence from a larger implementation, not a claim that `reference/minimal_resolver.py` alone provides source-grounded retrieval.
+`source_read_gate.py` can model continuation, source availability, AND/OR requirements, and no-external-read constraints when those facts are supplied by the caller. It does not discover or prove those facts itself.
+
+The Explicit Source Read Gate described in [`SOURCE_READ_GATE.md`](SOURCE_READ_GATE.md) is therefore both a public behavioral contract and a small reproducible decision model, but it is not a complete retrieval or connector implementation.
 
 ## Canonical sources still matter
 
@@ -38,6 +44,8 @@ A resolver can only be as reliable as the records it receives.
 If authoritative sources are missing, stale, contradictory, or improperly classified, the correct result may be `UNKNOWN`, `CONFLICT`, `VERIFY`, or `DATA_ERROR` rather than a useful value.
 
 If a user explicitly designates a source and that source is unavailable, a similar record elsewhere should not automatically be treated as equivalent evidence.
+
+Likewise, the Source Read Gate reference model can only evaluate the `read_log` and source-status information it receives. Incorrect caller-supplied evidence can produce an incorrect gate result.
 
 ## Volatile state requires live verification
 
@@ -53,6 +61,7 @@ Reported validation counts demonstrate regression coverage for the tested implem
 - proof that another implementation will produce identical results
 - proof that every future phrasing of an explicit-source request will be routed correctly
 - proof that all external source connectors will fail closed identically
+- proof that the public pure/local gate model guarantees an external read actually happened
 
 ## Public examples are synthetic
 
