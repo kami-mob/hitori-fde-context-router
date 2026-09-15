@@ -174,9 +174,9 @@ This public-impacting update adds a small pure/local Source Read Gate outcome mo
 - [x] PR-level Reference Tests completed successfully before this checklist writeback, including the decision resolver check, the 32-test Source Read Gate suite, and `compileall`
 - [x] final merge review requires the CI result for the current checklist-containing head to be observed separately before merge
 
-Preparation state: **REVIEWED_PR_PENDING_MERGE**.
+Synchronization state: **MERGED_AND_POST_MERGE_VERIFIED**.
 
-This checklist entry does not itself authorize a merge and does not promote a preparation branch to the public current state.
+The synchronization was separately authorized for merge, squash-merged to public `main`, and verified by post-merge CI. This checklist records the resulting public state and does not grant any future merge authority.
 
 ## Current status
 
@@ -186,8 +186,9 @@ Validation date: 2026-08-29
 Policy audit: **PASS**
 Reachable-history audit: **PASS**
 Post-history-rewrite CI: **Reference Resolver Tests — SUCCESS**
+Source Read Gate post-merge CI: **Reference Tests — SUCCESS** (run `34934143849`; job `104268350660`)
 
-The current public `main` remains the previously released v0.1 until a reviewed synchronization PR is separately authorized and merged.
+Source Read Gate public synchronization is merged and post-merge verified on public `main` commit `06946e5de7d6caf87c58892ed121784ff89a85d1`, tree `207ea2b50e263e3e68ba8ffb7e8d07871abee51c`. The current public release status remains **PUBLIC_V0_1_READY**.
 
 ### Non-blocking discoverability item
 
