@@ -178,6 +178,27 @@ Synchronization state: **MERGED_AND_POST_MERGE_VERIFIED**.
 
 The synchronization was separately authorized for merge, squash-merged to public `main`, and verified by post-merge CI. This checklist records the resulting public state and does not grant any future merge authority.
 
+## 2026-09-16 Context Router preflight composition sync review
+
+This public-impacting update adds the smallest pure/local composition layer that places the existing Explicit Source Read Gate before current-decision resolution.
+
+- [x] canonical PR #3 imported the independently reviewed staging PR #5 patch rather than merging the staging PR
+- [x] the three imported blobs are byte-identical to the reviewed staging implementation
+- [x] staging implementation tree and canonical candidate tree were exactly `78f0f0ff7a990583cf9ab83ec223af148a09f62a`
+- [x] only `reference/context_router_preflight.py`, `tests/test_context_router_preflight.py`, and `docs/CONTEXT_ROUTER_PREFLIGHT.md` were added
+- [x] no existing public file was modified by the implementation import
+- [x] the preflight calls the resolver only for `PASS` / `NOT_APPLICABLE` and preserves `VERIFY` / `UNKNOWN` / `DATA_ERROR` fail-closed
+- [x] no external I/O, remote retrieval, HOT/WARM/COLD loading, external model invocation, agentic execution, production runtime, or mutation was added
+- [x] staging verification reported preflight 7/7, resolver 7/7, Source Read Gate 32/32, and `compileall` success on the exact tree later imported to public canonical
+- [x] canonical PR push CI and PR CI both succeeded
+- [x] human merge decision was explicit and canonical PR #3 was merged
+- [x] public post-merge Reference Tests run `34993821275` succeeded
+- [x] merged public `main` is `a88d01ca64c5d81d7838c12e8fd3cd42f6b267a2` with tree `78f0f0ff7a990583cf9ab83ec223af148a09f62a`
+
+Synchronization state: **MERGED_AND_POST_MERGE_VERIFIED**.
+
+The current public CI workflow still runs the resolver suite, Source Read Gate suite, and `compileall`; it does not yet invoke `tests/test_context_router_preflight.py` as its own CI step. The direct 7/7 preflight result is retained from the independently reviewed staging execution whose full Git tree was proven identical to the canonical import candidate. Adding the direct preflight test to public CI is a separate non-blocking maintenance change, not implied authority from this checklist.
+
 ## Current status
 
 **PUBLIC_V0_1_READY**
@@ -187,9 +208,11 @@ Policy audit: **PASS**
 Reachable-history audit: **PASS**
 Post-history-rewrite CI: **Reference Resolver Tests — SUCCESS**
 Source Read Gate post-merge CI: **Reference Tests — SUCCESS** (run `34934143849`; job `104268350660`)
+Context Router preflight post-merge CI: **Reference Tests — SUCCESS** (run `34993821275`; job `104464919679`)
 
-Source Read Gate public synchronization is merged and post-merge verified on public `main` commit `06946e5de7d6caf87c58892ed121784ff89a85d1`, tree `207ea2b50e263e3e68ba8ffb7e8d07871abee51c`. The current public release status remains **PUBLIC_V0_1_READY**.
+The Context Router preflight composition is merged and post-merge verified on current public `main` commit `a88d01ca64c5d81d7838c12e8fd3cd42f6b267a2`, tree `78f0f0ff7a990583cf9ab83ec223af148a09f62a`. The current public release status remains **PUBLIC_V0_1_READY**.
 
-### Non-blocking discoverability item
+### Non-blocking discoverability / CI-maintenance items
 
-Repository Topics are currently empty. This does not affect privacy, correctness, or the release gate, but adding Topics later can improve GitHub discoverability.
+- Repository Topics can be refined later for discoverability.
+- Add `python tests/test_context_router_preflight.py` as a direct public CI step in a separately reviewed maintenance change.
