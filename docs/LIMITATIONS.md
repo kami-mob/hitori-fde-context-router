@@ -20,10 +20,11 @@ Explicit resolution, source-read gates, and fail-closed states reduce some class
 
 ## The public reference code does not perform external source I/O
 
-This repository now contains two dependency-free Python reference models:
+This repository now contains three dependency-free Python reference models:
 
 - `reference/minimal_resolver.py` demonstrates the **decision-resolution contract**.
 - `reference/source_read_gate.py` demonstrates **pure/local Source Read Gate outcome logic** from caller-supplied request metadata and `read_log`.
+- `reference/context_router_preflight.py` demonstrates the **pure/local composition** of the two functions above, sequencing them in the conditional order [`ARCHITECTURE.md`](ARCHITECTURE.md) specifies for steps 0 and 1. See [`CONTEXT_ROUTER_PREFLIGHT.md`](CONTEXT_ROUTER_PREFLIGHT.md).
 
 They do **not**:
 
@@ -34,6 +35,13 @@ They do **not**:
 - enforce the Source Read Gate end-to-end at the connector or product integration layer
 
 `source_read_gate.py` can model continuation, source availability, AND/OR requirements, and no-external-read constraints when those facts are supplied by the caller. It does not discover or prove those facts itself.
+
+`context_router_preflight.py` adds no behavior beyond sequencing the two composed
+functions: it introduces no I/O, retrieval, external model invocation, agentic execution,
+HOT/WARM/COLD loading, or production runtime, and it does not change either composed
+function's own contract or test coverage. A `PASS` from the composition's gate stage is
+not proof that an external read happened; that evidence is still supplied by the caller
+via `read_log`, exactly as in `source_read_gate.py` alone.
 
 The Explicit Source Read Gate described in [`SOURCE_READ_GATE.md`](SOURCE_READ_GATE.md) is therefore both a public behavioral contract and a small reproducible decision model, but it is not a complete retrieval or connector implementation.
 
