@@ -52,6 +52,19 @@ This gate has priority over the normal `read little` optimization. It does not m
 
 See [`SOURCE_READ_GATE.md`](SOURCE_READ_GATE.md) for the full public contract.
 
+### Reference composition of steps 0 and 1
+
+[`reference/context_router_preflight.py`](../reference/context_router_preflight.py) is a pure/local
+reference that sequences step 0 and step 1 exactly as specified above: it evaluates the
+Source Read Gate first and only calls the Resolution Kernel when the gate reaches `PASS`
+(the requirement was satisfied) or `NOT_APPLICABLE` (no explicit source was in force). A
+gate outcome of `VERIFY`, `UNKNOWN`, or `DATA_ERROR` is returned unchanged and the resolver
+is never invoked, so an unresolved or malformed source-read requirement is never quietly
+replaced by a resolver opinion formed without the required evidence. It composes the two
+existing functions without adding new I/O, retrieval, or behavior of its own. See
+[`CONTEXT_ROUTER_PREFLIGHT.md`](CONTEXT_ROUTER_PREFLIGHT.md) for the full composition
+contract.
+
 ## 1. Resolution Kernel
 
 Resolve the smallest relevant decision scope before broad context retrieval:
