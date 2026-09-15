@@ -1,6 +1,6 @@
 # hitori-fde-context-router
 
-[![Reference Resolver Tests](https://github.com/kami-mob/hitori-fde-context-router/actions/workflows/reference-tests.yml/badge.svg)](https://github.com/kami-mob/hitori-fde-context-router/actions/workflows/reference-tests.yml)
+[![Reference Tests](https://github.com/kami-mob/hitori-fde-context-router/actions/workflows/reference-tests.yml/badge.svg)](https://github.com/kami-mob/hitori-fde-context-router/actions/workflows/reference-tests.yml)
 
 **Save a lot, read little, resolve correctly, re-sync when it matters.**
 
@@ -32,7 +32,7 @@ Work
 
 通常は必要なContextだけを読みます。ただしユーザーがSourceを明示した場合、そのSourceの実読を`read little`の名目で省略しません。
 
-最小Python実装、synthetic data、再現可能な7ケースのテスト、GitHub Actions CI、より大きなprivate実装で得た匿名化済みaggregate validation、Source Read Gateの公開contract、そしてlimitationsを公開しています。
+このpublic referenceでは、decision resolutionの最小Python実装に加えて、Explicit Source Read Gateの**pure/localな判定モデル**も公開しています。Source Read Gateのモデルは外部接続そのものを行わず、callerから渡された`read_log`を使って `PASS / VERIFY / UNKNOWN / DATA_ERROR` 等を決定します。
 
 日本語の補足は [`docs/FAQ_JA.md`](docs/FAQ_JA.md) を参照してください。
 
@@ -43,8 +43,8 @@ Work
 1. Read the architecture below.
 2. See [`docs/SOURCE_READ_GATE.md`](docs/SOURCE_READ_GATE.md) for the explicit-source grounding contract.
 3. See [`docs/DECISION_RESOLUTION_SPEC.md`](docs/DECISION_RESOLUTION_SPEC.md) for the resolution contract.
-4. Run `python tests/test_resolver.py` to reproduce the public 7/7 reference tests.
-5. Read [`docs/VALIDATION.md`](docs/VALIDATION.md) for sanitized evidence from the larger private implementation.
+4. Run `python tests/test_resolver.py` for the decision-resolution reference and `python -m unittest discover -s tests -p test_source_read_gate.py` for the Source Read Gate reference suite.
+5. Read [`docs/VALIDATION.md`](docs/VALIDATION.md) for public reproducible checks and sanitized evidence from the larger private implementation.
 6. Read [`docs/LIMITATIONS.md`](docs/LIMITATIONS.md) before interpreting the results.
 
 ## Problem
@@ -78,7 +78,7 @@ HOT / WARM / COLD
 Work
 ```
 
-When an explicit source is designated, the Source Read Gate requires actual read/fetch before source-grounded claims and blocks memory substitution if that source is unavailable.
+When an explicit source is designated, the Source Read Gate requires actual read/fetch before source-grounded claims and blocks memory substitution if that source is unavailable. The public `source_read_gate.py` models the decision logic around this contract; it does not itself perform the external read.
 
 Before broad retrieval, the Resolution Kernel identifies:
 
@@ -107,7 +107,7 @@ For explicit-source failures, unavailable or unreadable required evidence should
 
 ## Public scope
 
-This repository contains only generalized specifications, synthetic examples, and a minimal reference implementation.
+This repository contains only generalized specifications, synthetic examples, and minimal reference implementations.
 
 It intentionally does **not** contain:
 
@@ -130,15 +130,17 @@ Operational templates, workspace-specific installation materials, migration pack
 ## Contents
 
 - `docs/ARCHITECTURE.md` — architecture and routing model
-- `docs/SOURCE_READ_GATE.md` — explicit-source grounding contract
+- `docs/SOURCE_READ_GATE.md` — explicit-source grounding contract and pure/local gate model
 - `docs/DECISION_RESOLUTION_SPEC.md` — current-decision resolution rules
 - `docs/VALIDATION.md` — validation methodology and sanitized results
 - `docs/LIMITATIONS.md` — what the evidence does and does not prove
 - `docs/SHARING_GUIDE.md` — wording for referencing this work accurately
 - `docs/FAQ_JA.md` — Japanese FAQ / first-reader guide
-- `reference/minimal_resolver.py` — dependency-free minimal resolver
+- `reference/minimal_resolver.py` — dependency-free minimal decision resolver
+- `reference/source_read_gate.py` — dependency-free Source Read Gate outcome model; no external I/O
 - `reference/sample_decisions.json` — synthetic decision records
-- `tests/test_resolver.py` — deterministic reference tests
+- `tests/test_resolver.py` — deterministic decision-resolution reference cases
+- `tests/test_source_read_gate.py` — Source Read Gate suite including resolver regression guards
 - `.github/workflows/reference-tests.yml` — CI for the public reference
 - `PUBLICATION_CHECKLIST.md` — publication safety boundary
 
@@ -157,25 +159,26 @@ Private/internal implementations were validated separately before this sanitized
 - scripted operation observation: **10/10 PASS**
 - false VERIFY / false CONFLICT / stale revival / safety miss / COLD broad read: **0** in that observation window
 
-These are aggregate validation results, not a claim that every future environment will behave identically.
+These are aggregate validation results from larger private/integration layers, not a claim that every future environment will behave identically.
 
 ## Reference implementation
 
-The code in this repository is intentionally small. It demonstrates the decision-resolution contract, not the complete private production system.
+The code in this repository is intentionally small.
 
-The public Python resolver does **not** perform external connector I/O and does not independently enforce the Source Read Gate. The gate is published here as an architecture/operating contract with sanitized validation evidence.
+- `reference/minimal_resolver.py` demonstrates the decision-resolution contract.
+- `reference/source_read_gate.py` demonstrates pure/local Source Read Gate outcome logic from caller-supplied request metadata and `read_log`.
+
+Neither module performs external connector I/O. In particular, `source_read_gate.py` does **not** prove that a repository or document was really fetched; the caller supplies the read evidence that the model evaluates.
 
 Run locally:
 
 ```bash
 python tests/test_resolver.py
+python -m unittest discover -s tests -p test_source_read_gate.py
+python -m compileall reference tests
 ```
 
-Expected result:
-
-```text
-7/7 PASS
-```
+The Source Read Gate unittest suite contains 32 tests in this reference, including regression guards for the existing decision resolver.
 
 ## Status
 

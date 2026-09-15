@@ -1,4 +1,4 @@
-name: Reference Resolver Tests
+name: Reference Tests
 
 on:
   push:
@@ -12,5 +12,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Run deterministic reference tests
+      - name: Run decision resolver reference tests
         run: python tests/test_resolver.py
+      - name: Run Source Read Gate reference suite
+        run: python -m unittest discover -s tests -p 'test_source_read_gate.py'
+      - name: Compile public Python reference
+        run: python -m compileall reference tests

@@ -50,7 +50,7 @@ The system was tested for scenarios where conversation history is long or a task
 
 A separate source-grounding failure class was tested after natural use exposed a case where an explicitly designated saved source could be bypassed by conversational summaries or prior context.
 
-The dedicated sanitized regression set covered:
+The larger private/integration regression set covered:
 
 - explicit repository source request
 - explicit document source request
@@ -76,6 +76,47 @@ A post-sync live dogfood smoke then checked five operational gates:
 Result: **P1–P5 PASS**.
 
 The public repository does not include workspace-specific source names, paths, product settings, or private operational logs from those tests.
+
+## Public reproducible reference checks
+
+The public repository contains two small dependency-free Python reference surfaces.
+
+### Decision resolver
+
+```bash
+python tests/test_resolver.py
+```
+
+This exercises the existing synthetic decision-resolution reference cases.
+
+### Source Read Gate outcome model
+
+```bash
+python -m unittest discover -s tests -p test_source_read_gate.py
+```
+
+The Source Read Gate suite contains **32 tests**. It covers the pure/local gate model plus regression guards for the existing decision resolver, including:
+
+- explicit source present / absent from `read_log`
+- ALL / ANY semantics
+- fail-closed unavailable-source handling
+- no-memory-substitution behavior in the modeled inputs
+- continuation carryover and source-change behavior
+- validation scoped only to the effective current/continuation requirement
+- stale inactive metadata not causing spurious `DATA_ERROR`
+- `no_external_read` allowing already-present evidence while blocking a needed new retrieval
+- bounded-retrieval `extra_reads` reporting
+- malformed active request handling
+
+The suite does **not** perform external connector I/O. A passing test proves the local decision logic for supplied inputs, not that a real external fetch happened.
+
+A syntax/bytecode check is also supported:
+
+```bash
+python -m compileall reference tests
+```
+
+GitHub Actions runs the public resolver check, the Source Read Gate suite, and compileall on pull requests and pushes.
 
 ## Sanitized validation results
 
@@ -132,6 +173,8 @@ Ten operational scenarios were exercised after limited application:
 These results are evidence that the tested implementation behaved consistently under the tested scenarios.
 
 They are **not** a mathematical proof of all future AI behavior, all models, all workspaces, all connectors, or all external-memory structures.
+
+The public reproducible tests and the larger private/integration aggregate evidence are separate evidence classes and should not be conflated.
 
 The strongest claim supported by the evidence is:
 

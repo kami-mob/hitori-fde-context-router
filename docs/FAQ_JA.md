@@ -56,11 +56,11 @@ Source指定が明示された場合、その指定がretrieval requirementに�
 
 違います。
 
-公開repoで第三者がそのまま再現できるreference testは**7/7**です。
+公開repoには、decision resolverの7ケースに加えて、`tests/test_source_read_gate.py` のSource Read Gate unittest suiteがあります。このsuiteは**32 tests**で、Source Read Gateのケースに加えて既存resolverのregression guardも含みます。
 
 `85,000/85,000`などの大きな数値は、より大きなprivate implementationで実施したproperty / regression validationの匿名化済みaggregate evidenceです。公開最小実装そのものが85,000ケースを実行するという意味ではありません。
 
-同様に、Explicit Source Read Gateの`10/10 PASS`とlive dogfood smokeの`P1–P5 PASS`も、より大きなintegration layerでのsanitized evidenceです。公開Python resolver単体が外部Sourceをfetchするわけではありません。
+同様に、Explicit Source Read Gateの`10/10 PASS`とlive dogfood smokeの`P1–P5 PASS`も、より大きなintegration layerでのsanitized evidenceです。公開の`source_read_gate.py`単体が外部Sourceをfetchするわけではありません。
 
 ## なぜUNKNOWNやCONFLICTを返すのですか？
 
@@ -100,11 +100,13 @@ workspace固有の完成テンプレート、migration package、private product
 
 ## Source Read Gateは公開Pythonコードに実装されていますか？
 
-いいえ。
+**判定ロジックのpure/local reference modelは実装されています。**
 
-`reference/minimal_resolver.py` はdecision resolutionの最小referenceです。外部Sourceへの接続・fetch・閲覧確認までは実装していません。
+`reference/source_read_gate.py` は、callerから渡されたSource指定、`read_log`、利用不能Source、continuation情報などから `PASS / VERIFY / UNKNOWN / DATA_ERROR` 等を決める最小モデルです。
 
-公開repoでは、Source Read Gateの**contract・architecture・validation evidence・limitations**を公開しています。これにより、公開最小コードの範囲を過大に見せないようにしています。
+ただし、外部Sourceへの接続・fetch・閲覧そのものは行いません。指定Sourceを本当に読んだかどうかはcallerが`read_log`として渡す前提なので、このmoduleだけでend-to-endのSource Read Gateを強制するものではありません。
+
+`reference/minimal_resolver.py` は引き続きdecision resolutionの別の最小referenceです。
 
 ## 自由にコピー・再利用できますか？
 

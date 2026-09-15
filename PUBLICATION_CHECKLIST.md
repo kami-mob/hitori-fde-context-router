@@ -160,6 +160,24 @@ The public Source Read Gate material documents the behavioral contract and evide
 - [x] publication/content-policy review is part of the ongoing synchronization gate
 - [x] promotion status restored to public-ready after history rewrite verification
 
+## 2026-09-15 Source Read Gate reference-model sync review
+
+This public-impacting update adds a small pure/local Source Read Gate outcome model and its reproducible tests. The preparation review checked the proposed public surface before merge:
+
+- [x] imported gate model, test suite, and Source Read Gate documentation match the frozen reviewed source used for this preparation
+- [x] public changes remain within the approved documentation, reference-code, test, CI, and checklist surface
+- [x] no company/customer/person identifiers, credentials, private URLs, workspace-specific connector configuration, production settings, or private operational evidence were introduced
+- [x] the public model is explicitly described as **no external I/O** and not as end-to-end proof that a real fetch occurred
+- [x] Why / What / Evidence and commercial boundaries remain intact
+- [x] preparation commits use GitHub `users.noreply.github.com` commit metadata
+- [x] the target `main` remained on its previously audited clean history while this preparation branch was reviewed
+- [x] PR-level Reference Tests completed successfully before this checklist writeback, including the decision resolver check, the 32-test Source Read Gate suite, and `compileall`
+- [x] final merge review requires the CI result for the current checklist-containing head to be observed separately before merge
+
+Preparation state: **REVIEWED_PR_PENDING_MERGE**.
+
+This checklist entry does not itself authorize a merge and does not promote a preparation branch to the public current state.
+
 ## Current status
 
 **PUBLIC_V0_1_READY**
@@ -169,7 +187,7 @@ Policy audit: **PASS**
 Reachable-history audit: **PASS**
 Post-history-rewrite CI: **Reference Resolver Tests — SUCCESS**
 
-The synthetic-value correction and history rebuild do not change the public Python resolver or its expected deterministic result (`7/7 PASS`).
+The current public `main` remains the previously released v0.1 until a reviewed synchronization PR is separately authorized and merged.
 
 ### Non-blocking discoverability item
 
