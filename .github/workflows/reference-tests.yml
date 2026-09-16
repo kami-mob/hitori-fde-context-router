@@ -16,5 +16,11 @@ jobs:
         run: python tests/test_resolver.py
       - name: Run Source Read Gate reference suite
         run: python -m unittest discover -s tests -p 'test_source_read_gate.py'
+      - name: Run Context Router preflight suite
+        run: python tests/test_context_router_preflight.py
+      - name: Run Context Selection suite
+        run: python tests/test_context_selection.py
+      - name: Run Selective Recall runtime suite
+        run: python tests/test_selective_recall_runtime.py
       - name: Compile public Python reference
-        run: python -m compileall reference tests
+        run: python -m compileall reference runtime tests
