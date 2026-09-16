@@ -18,16 +18,17 @@ Explicit resolution, source-read gates, and fail-closed states reduce some class
 - every safety condition is detected without suitable metadata or rules
 - every model follows an instruction perfectly
 
-## The public reference code does not perform external source I/O
+## The public reference code is deliberately bounded
 
-This repository now contains four dependency-free Python reference models:
+This repository now contains five dependency-free Python reference surfaces:
 
 - `reference/minimal_resolver.py` demonstrates the **decision-resolution contract**.
 - `reference/source_read_gate.py` demonstrates **pure/local Source Read Gate outcome logic** from caller-supplied request metadata and `read_log`.
 - `reference/context_router_preflight.py` demonstrates the **pure/local composition** of the two functions above, sequencing them in the conditional order [`ARCHITECTURE.md`](ARCHITECTURE.md) specifies for steps 0 and 1. See [`CONTEXT_ROUTER_PREFLIGHT.md`](CONTEXT_ROUTER_PREFLIGHT.md).
-- `reference/context_selection.py` demonstrates **step 2 planning only** — deciding which already-scored, already-tiered candidates belong in the HOT/WARM/COLD read plan, per [`ARCHITECTURE.md`](ARCHITECTURE.md). See [`CONTEXT_SELECTION.md`](CONTEXT_SELECTION.md).
+- `reference/context_selection.py` demonstrates **step 2 planning** — deciding which already-scored, already-tiered candidates belong in the HOT/WARM/COLD read plan. See [`CONTEXT_SELECTION.md`](CONTEXT_SELECTION.md).
+- `runtime/selective_recall.py` demonstrates the **step 3 runtime boundary** — validating a `SELECTED` plan and invoking only a caller-supplied loader for IDs already present in that plan. See [`SELECTIVE_RECALL_RUNTIME.md`](SELECTIVE_RECALL_RUNTIME.md).
 
-They do **not**:
+The first four surfaces do **not**:
 
 - connect to external repositories or document stores
 - fetch a user-designated document
@@ -35,7 +36,6 @@ They do **not**:
 - detect every product-level continuation/source designation automatically
 - enforce the Source Read Gate end-to-end at the connector or product integration layer
 - score, classify, or determine relevance of any candidate context on their own
-- perform step 3 (Selective Recall) — the actual retrieval/loading of selected content
 
 `source_read_gate.py` can model continuation, source availability, AND/OR requirements, and no-external-read constraints when those facts are supplied by the caller. It does not discover or prove those facts itself.
 
@@ -50,10 +50,20 @@ via `read_log`, exactly as in `source_read_gate.py` alone.
 assignment, and condition/explicit-source flags the caller supplies for each
 candidate; it does not itself judge what is relevant, what tier something belongs
 in, or whether an explicit source designation is genuine. It decides what a step 2
-plan should contain — it does not carry out step 3 and load, fetch, or retrieve any
-of the content it selects.
+plan should contain; it does not itself load, fetch, or retrieve any selected content.
 
-The Explicit Source Read Gate described in [`SOURCE_READ_GATE.md`](SOURCE_READ_GATE.md) is therefore both a public behavioral contract and a small reproducible decision model, but it is not a complete retrieval or connector implementation.
+`runtime/selective_recall.py` is intentionally one layer narrower than a connector or
+retrieval system. It calls only the caller-supplied `loader(candidate_id)` for IDs already
+present in a validated plan, but it does not choose a connector, authenticate a source,
+verify source provenance, judge loader correctness, or independently prove that an
+external read occurred. Any actual filesystem/network/connector I/O is implemented by
+the caller's loader. Loader behavior therefore remains part of the surrounding product
+boundary, including timeout policy, authentication, source identity, and secret-safe
+error handling. The reference records `str(exception)` for a failed loader call; callers
+must not place credentials or other sensitive material in loader exception messages that
+may be propagated in the returned failure mapping.
+
+The Explicit Source Read Gate described in [`SOURCE_READ_GATE.md`](SOURCE_READ_GATE.md) is therefore both a public behavioral contract and a small reproducible decision model, but it is not a complete retrieval or connector implementation. The Selective Recall runtime similarly demonstrates a bounded execution boundary without turning this repository into a complete production retrieval stack.
 
 ## Canonical sources still matter
 
@@ -64,6 +74,8 @@ If authoritative sources are missing, stale, contradictory, or improperly classi
 If a user explicitly designates a source and that source is unavailable, a similar record elsewhere should not automatically be treated as equivalent evidence.
 
 Likewise, the Source Read Gate reference model can only evaluate the `read_log` and source-status information it receives. Incorrect caller-supplied evidence can produce an incorrect gate result.
+
+A Selective Recall plan also depends on caller-supplied candidate metadata. If the wrong IDs were selected upstream, the runtime's plan-bounded loading cannot correct that semantic mistake on its own.
 
 ## Volatile state requires live verification
 
@@ -80,6 +92,7 @@ Reported validation counts demonstrate regression coverage for the tested implem
 - proof that every future phrasing of an explicit-source request will be routed correctly
 - proof that all external source connectors will fail closed identically
 - proof that the public pure/local gate model guarantees an external read actually happened
+- proof that an arbitrary caller-supplied loader is safe, correct, or source-authentic
 
 ## Public examples are synthetic
 
