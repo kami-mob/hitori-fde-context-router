@@ -216,3 +216,44 @@ The Context Router preflight composition is merged and post-merge verified on cu
 
 - Repository Topics can be refined later for discoverability.
 - Add `python tests/test_context_router_preflight.py` as a direct public CI step in a separately reviewed maintenance change.
+
+## 2026-09-16 Context Selection and Selective Recall sync review — latest overlay
+
+This section is the latest public-evidence status overlay and supersedes older `Current status` and CI-scope sentences above where they conflict.
+
+The Context Selection implementation and documentation were synchronized first, followed by the separately reviewed Selective Recall runtime boundary.
+
+Context Selection synchronization evidence:
+
+- [x] public canonical PR #6 merged the reviewed Context Selection reference; resulting main commit `451be648dc06534e8a6ce3a274886df08f9f069a`, tree `96488da886e59a3e8a6bfd2d35b1a8fc2ba586e0`
+- [x] post-merge Reference Tests run `35036419403` succeeded
+- [x] public canonical PR #7 synchronized Context Selection documentation and validation evidence; resulting main commit `9c2c56eb854f3d3f78dc6947fa281313dc4440a0`, tree `5c2ba3f1458d1cab8aa9c2b522523a7cedc18c4e`
+- [x] post-merge Reference Tests run `35041294706` succeeded
+
+Selective Recall synchronization evidence:
+
+- [x] the three reviewed executor-produced files were imported byte-for-byte from the reviewed staging candidate rather than merging the staging PR
+- [x] imported blobs are `runtime/selective_recall.py` = `1e83cc6b8af7b5dc1a5727a8c3fe82ef76363cda`, `tests/test_selective_recall_runtime.py` = `65173aa38bc31d03f72d152a585d4c287f4d0c19`, and `docs/SELECTIVE_RECALL_RUNTIME.md` = `af68dbf1dd6a0cec51e68d71cd5a9a608f403e94`
+- [x] public README / Architecture / Limitations / Validation were aligned so step 2 planning and step 3 loading are described separately and conservatively
+- [x] the public runtime performs no autonomous search, connector discovery, relevance scoring, external model invocation, production mutation, or unrelated COLD expansion
+- [x] any real I/O is explicitly the responsibility of the caller-supplied loader; the runtime does not independently prove source provenance or connector correctness
+- [x] no company/customer/person identifiers, credentials, private URLs, workspace-specific connector configuration, production settings, or private operational evidence were introduced
+- [x] public PR #8 head `5f43da523d90fbe0fe563dcd8ca131f415c1d572` passed Reference Tests run `35094948451`, including resolver, Source Read Gate, preflight, Context Selection, Selective Recall, and `compileall reference runtime tests`
+- [x] public PR #8 was merged as `e6104d073dee99fdd62f8afb8c4dabf25f63f223`, tree `07cb6adf20bc3010ac602fd50c3f532a946225f5`
+- [x] post-merge Reference Tests run `35095353229` succeeded on the exact merge commit
+- [x] merge commit metadata uses GitHub noreply addresses
+
+Synchronization state for the Selective Recall runtime content: **MERGED_AND_POST_MERGE_VERIFIED**.
+
+The checklist bookkeeping change itself must pass its own PR and post-merge CI before this overlay becomes the canonical checklist state. It grants no future executor, retry, staging-merge, production, permission, secret, or automatic-import authority.
+
+### Latest public status
+
+**PUBLIC_V0_1_READY**
+
+Policy audit: **PASS**  
+Reachable-history audit baseline: **PASS**  
+Context Selection docs post-merge CI: **Reference Tests — SUCCESS** (run `35041294706`)  
+Selective Recall post-merge CI: **Reference Tests — SUCCESS** (run `35095353229`)
+
+Current public runtime/content main before this checklist-only bookkeeping merge is `e6104d073dee99fdd62f8afb8c4dabf25f63f223`, tree `07cb6adf20bc3010ac602fd50c3f532a946225f5`.
