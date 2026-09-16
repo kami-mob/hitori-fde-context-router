@@ -79,7 +79,7 @@ The public repository does not include workspace-specific source names, paths, p
 
 ## Public reproducible reference checks
 
-The public repository contains four small dependency-free Python reference surfaces.
+The public repository contains five small dependency-free Python reference surfaces.
 
 ### Decision resolver
 
@@ -124,17 +124,34 @@ The suite contains **7 tests**. It guards only the gate-then-resolver sequencing
 python tests/test_context_selection.py
 ```
 
-The suite contains **18 tests**. It covers the step 2 planning rules described in [`CONTEXT_SELECTION.md`](CONTEXT_SELECTION.md): `HOT` selection by `relevant`, `WARM` selection by an active `condition`, `COLD` exclusion by default, the `explicit_source` carve-out across all tiers, the `explicitly_required` carve-out scoped to `COLD` only, deterministic HOT-then-WARM-then-COLD plan ordering, and `DATA_ERROR` on duplicate ids or an unknown tier. This is a planning check only — it does not exercise step 3 (Selective Recall); the module performs no retrieval or loading of any candidate's content.
+The suite contains **18 tests**. It covers the step 2 planning rules described in [`CONTEXT_SELECTION.md`](CONTEXT_SELECTION.md): `HOT` selection by `relevant`, `WARM` selection by an active `condition`, `COLD` exclusion by default, the `explicit_source` carve-out across all tiers, the `explicitly_required` carve-out scoped to `COLD` only, deterministic HOT-then-WARM-then-COLD plan ordering, and `DATA_ERROR` on duplicate ids or an unknown tier. This is a planning check only; the module performs no retrieval or loading of any candidate's content.
+
+### Selective Recall runtime boundary
+
+```bash
+python tests/test_selective_recall_runtime.py
+```
+
+The suite contains **12 tests**. It covers the step 3 boundary described in [`SELECTIVE_RECALL_RUNTIME.md`](SELECTIVE_RECALL_RUNTIME.md):
+
+- plan IDs are loaded exactly once and in plan order;
+- an empty plan performs no load;
+- candidates excluded upstream are not loaded merely because they exist elsewhere;
+- one loader failure is recorded per ID without substituting fallback content or aborting later IDs;
+- malformed, wrong-stage, non-`SELECTED`, missing-plan, non-string-ID, and duplicate-ID plans fail closed before loader invocation;
+- an end-to-end synthetic case consumes the real `select_context` output and does not load an excluded COLD candidate.
+
+The test loader is synthetic and in-memory. These tests prove plan-bounded orchestration behavior; they do not prove connector authentication, source provenance, network reliability, or correctness of an arbitrary caller-supplied loader.
 
 A syntax/bytecode check is also supported:
 
 ```bash
-python -m compileall reference tests
+python -m compileall reference runtime tests
 ```
 
 ### Current CI scope
 
-The GitHub Actions workflow in this repository ([`.github/workflows/reference-tests.yml`](../.github/workflows/reference-tests.yml)) currently invokes only the decision resolver check (`python tests/test_resolver.py`), the Source Read Gate suite (`python -m unittest discover -s tests -p test_source_read_gate.py`), and `python -m compileall reference tests`, on pull requests and pushes. It does not yet invoke `test_context_router_preflight.py` or `test_context_selection.py`; those two suites are currently verified locally with the commands above, not by CI.
+The GitHub Actions workflow in this repository ([`.github/workflows/reference-tests.yml`](../.github/workflows/reference-tests.yml)) invokes the decision resolver, Source Read Gate, Context Router preflight, Context Selection, and Selective Recall runtime suites, followed by `python -m compileall reference runtime tests`, on pull requests and pushes.
 
 ## Sanitized validation results
 
@@ -196,4 +213,4 @@ The public reproducible tests and the larger private/integration aggregate evide
 
 The strongest claim supported by the evidence is:
 
-> A resolution-first, selective-recall architecture can be implemented and regression-tested so that old decisions, ambiguous provenance, stale state, unrelated context, conditional safety rules, and explicit user-selected source requirements are handled explicitly instead of being left entirely to implicit model judgment.
+> A resolution-first, selective-recall architecture can be implemented and regression-tested so that old decisions, ambiguous provenance, stale state, unrelated context, conditional safety rules, explicit user-selected source requirements, and bounded selected-context loading are handled explicitly instead of being left entirely to implicit model judgment.
