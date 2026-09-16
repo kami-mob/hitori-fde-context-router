@@ -128,11 +128,31 @@ has already scored for relevance and tagged with a HOT/WARM/COLD tier, `select_c
 deterministically decides which of those candidates the rules above select, including
 the `explicit_source` and `explicitly_required` carve-outs. This is planning only — it
 answers "what should be read next," which is step 2 (Context Router) in the diagram
-above. It does not perform step 3 (Selective Recall), the actual retrieval/loading of
-that content once planned; that remains a runtime/product concern outside this
-repository. See [`CONTEXT_SELECTION.md`](CONTEXT_SELECTION.md) for the full contract.
+above. It does not itself load, fetch, or retrieve any selected content. See
+[`CONTEXT_SELECTION.md`](CONTEXT_SELECTION.md) for the full contract.
 
-## 3. Safety independence
+## 3. Selective Recall runtime boundary
+
+[`runtime/selective_recall.py`](../runtime/selective_recall.py) is the separate, dependency-free
+reference boundary for carrying out an already-decided step 2 plan.
+
+`load_selected_context(plan_result, loader)`:
+
+- accepts only a well-formed `context_selection` result with `state == "SELECTED"`;
+- rejects malformed/non-SELECTED plans with `DATA_ERROR` before the loader is called;
+- calls the caller-supplied loader once for each ID already present in `plan`, in plan order;
+- does not consult unrelated candidates or expand the plan into additional COLD context;
+- records per-ID loader failures without substituting fallback content;
+- performs no relevance scoring, connector discovery, external model invocation, or production mutation of its own.
+
+The boundary deliberately does not decide where an ID lives or how it should be fetched. Any
+filesystem, repository, document-store, connector, or other I/O is implemented by the caller's
+loader. The runtime therefore constrains *which selected IDs may be attempted* without pretending
+to prove that a particular external connector or source was used correctly.
+
+See [`SELECTIVE_RECALL_RUNTIME.md`](SELECTIVE_RECALL_RUNTIME.md) for the full contract.
+
+## 4. Safety independence
 
 Safety is not a successful-resolution side effect.
 
@@ -144,7 +164,7 @@ Resolution state ───────────────┐
 Production / Permission trigger┘
 ```
 
-## 4. Long-context re-sync
+## 5. Long-context re-sync
 
 Conversation history is working context, not the final source of truth.
 
@@ -160,7 +180,7 @@ Re-sync to canonical state when the user asks for, or the task reaches, a materi
 - price / specification / version change
 - continuation of a task that explicitly designated a saved source
 
-## 5. Writeback
+## 6. Writeback
 
 Important confirmed decisions should be persisted outside the transient AI conversation.
 
