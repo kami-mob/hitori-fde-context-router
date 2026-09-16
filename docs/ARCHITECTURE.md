@@ -120,6 +120,18 @@ Examples:
 
 An explicit source read that is directly required by the user's request is not treated as a broad COLD sweep merely because that source would not otherwise be loaded by default.
 
+### Reference planner for step 2
+
+[`reference/context_selection.py`](../reference/context_selection.py) is a pure/local
+reference for this step: given a resolution result and a list of candidates the caller
+has already scored for relevance and tagged with a HOT/WARM/COLD tier, `select_context`
+deterministically decides which of those candidates the rules above select, including
+the `explicit_source` and `explicitly_required` carve-outs. This is planning only — it
+answers "what should be read next," which is step 2 (Context Router) in the diagram
+above. It does not perform step 3 (Selective Recall), the actual retrieval/loading of
+that content once planned; that remains a runtime/product concern outside this
+repository. See [`CONTEXT_SELECTION.md`](CONTEXT_SELECTION.md) for the full contract.
+
 ## 3. Safety independence
 
 Safety is not a successful-resolution side effect.

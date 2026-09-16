@@ -79,7 +79,7 @@ The public repository does not include workspace-specific source names, paths, p
 
 ## Public reproducible reference checks
 
-The public repository contains two small dependency-free Python reference surfaces.
+The public repository contains four small dependency-free Python reference surfaces.
 
 ### Decision resolver
 
@@ -110,13 +110,31 @@ The Source Read Gate suite contains **32 tests**. It covers the pure/local gate 
 
 The suite does **not** perform external connector I/O. A passing test proves the local decision logic for supplied inputs, not that a real external fetch happened.
 
+### Context Router preflight composition
+
+```bash
+python tests/test_context_router_preflight.py
+```
+
+The suite contains **7 tests**. It guards only the gate-then-resolver sequencing boundary described in [`CONTEXT_ROUTER_PREFLIGHT.md`](CONTEXT_ROUTER_PREFLIGHT.md) — that the resolver runs when the gate reaches `PASS` or `NOT_APPLICABLE`, and that the gate's own outcome is returned unchanged (and the resolver is never called) for `VERIFY`, `UNKNOWN`, or `DATA_ERROR`. It does not re-validate the resolver's or the gate's own internal behavior; the existing resolver and Source Read Gate suites above still cover that.
+
+### Context Selection planner
+
+```bash
+python tests/test_context_selection.py
+```
+
+The suite contains **18 tests**. It covers the step 2 planning rules described in [`CONTEXT_SELECTION.md`](CONTEXT_SELECTION.md): `HOT` selection by `relevant`, `WARM` selection by an active `condition`, `COLD` exclusion by default, the `explicit_source` carve-out across all tiers, the `explicitly_required` carve-out scoped to `COLD` only, deterministic HOT-then-WARM-then-COLD plan ordering, and `DATA_ERROR` on duplicate ids or an unknown tier. This is a planning check only — it does not exercise step 3 (Selective Recall); the module performs no retrieval or loading of any candidate's content.
+
 A syntax/bytecode check is also supported:
 
 ```bash
 python -m compileall reference tests
 ```
 
-GitHub Actions runs the public resolver check, the Source Read Gate suite, and compileall on pull requests and pushes.
+### Current CI scope
+
+The GitHub Actions workflow in this repository ([`.github/workflows/reference-tests.yml`](../.github/workflows/reference-tests.yml)) currently invokes only the decision resolver check (`python tests/test_resolver.py`), the Source Read Gate suite (`python -m unittest discover -s tests -p test_source_read_gate.py`), and `python -m compileall reference tests`, on pull requests and pushes. It does not yet invoke `test_context_router_preflight.py` or `test_context_selection.py`; those two suites are currently verified locally with the commands above, not by CI.
 
 ## Sanitized validation results
 
