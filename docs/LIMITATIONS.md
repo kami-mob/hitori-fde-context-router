@@ -20,11 +20,12 @@ Explicit resolution, source-read gates, and fail-closed states reduce some class
 
 ## The public reference code does not perform external source I/O
 
-This repository now contains three dependency-free Python reference models:
+This repository now contains four dependency-free Python reference models:
 
 - `reference/minimal_resolver.py` demonstrates the **decision-resolution contract**.
 - `reference/source_read_gate.py` demonstrates **pure/local Source Read Gate outcome logic** from caller-supplied request metadata and `read_log`.
 - `reference/context_router_preflight.py` demonstrates the **pure/local composition** of the two functions above, sequencing them in the conditional order [`ARCHITECTURE.md`](ARCHITECTURE.md) specifies for steps 0 and 1. See [`CONTEXT_ROUTER_PREFLIGHT.md`](CONTEXT_ROUTER_PREFLIGHT.md).
+- `reference/context_selection.py` demonstrates **step 2 planning only** — deciding which already-scored, already-tiered candidates belong in the HOT/WARM/COLD read plan, per [`ARCHITECTURE.md`](ARCHITECTURE.md). See [`CONTEXT_SELECTION.md`](CONTEXT_SELECTION.md).
 
 They do **not**:
 
@@ -33,6 +34,8 @@ They do **not**:
 - independently verify that an external source was actually read
 - detect every product-level continuation/source designation automatically
 - enforce the Source Read Gate end-to-end at the connector or product integration layer
+- score, classify, or determine relevance of any candidate context on their own
+- perform step 3 (Selective Recall) — the actual retrieval/loading of selected content
 
 `source_read_gate.py` can model continuation, source availability, AND/OR requirements, and no-external-read constraints when those facts are supplied by the caller. It does not discover or prove those facts itself.
 
@@ -42,6 +45,13 @@ HOT/WARM/COLD loading, or production runtime, and it does not change either comp
 function's own contract or test coverage. A `PASS` from the composition's gate stage is
 not proof that an external read happened; that evidence is still supplied by the caller
 via `read_log`, exactly as in `source_read_gate.py` alone.
+
+`context_selection.py` can only be as accurate as the relevance scoring, tier
+assignment, and condition/explicit-source flags the caller supplies for each
+candidate; it does not itself judge what is relevant, what tier something belongs
+in, or whether an explicit source designation is genuine. It decides what a step 2
+plan should contain — it does not carry out step 3 and load, fetch, or retrieve any
+of the content it selects.
 
 The Explicit Source Read Gate described in [`SOURCE_READ_GATE.md`](SOURCE_READ_GATE.md) is therefore both a public behavioral contract and a small reproducible decision model, but it is not a complete retrieval or connector implementation.
 
