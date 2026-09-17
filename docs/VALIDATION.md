@@ -79,7 +79,7 @@ The public repository does not include workspace-specific source names, paths, p
 
 ## Public reproducible reference checks
 
-The public repository contains five small dependency-free Python reference surfaces.
+The public repository contains six small dependency-free Python reference surfaces.
 
 ### Decision resolver
 
@@ -143,6 +143,23 @@ The suite contains **12 tests**. It covers the step 3 boundary described in [`SE
 
 The test loader is synthetic and in-memory. These tests prove plan-bounded orchestration behavior; they do not prove connector authentication, source provenance, network reliability, or correctness of an arbitrary caller-supplied loader.
 
+### Work Gate safety-independence boundary
+
+```bash
+python tests/test_work_gate.py
+```
+
+The suite contains **18 tests**. It covers the step 4 boundary described in [`WORK_GATE.md`](WORK_GATE.md), including:
+
+- literal `RESOLVED` with no active trigger returns `PROCEED`;
+- `UNKNOWN`, `CONFLICT`, `VERIFY`, `DATA_ERROR`, no decision, and other non-success states fail closed as `REVIEW_REQUIRED`;
+- production and permission triggers force `REVIEW_REQUIRED` even when the decision is already `RESOLVED`;
+- both active triggers are reported together;
+- malformed decision/trigger field types fail closed before trigger interpretation;
+- `None`, a `dict`, and other non-`WorkGateRequest` object shapes fail closed as `malformed_input` rather than raising due to field access.
+
+These tests exercise only a pure/local classifier over caller-supplied values. They do not prove that the caller detected a real production or permission condition correctly, and a `PROCEED` result is not execution authority.
+
 A syntax/bytecode check is also supported:
 
 ```bash
@@ -151,7 +168,7 @@ python -m compileall reference runtime tests
 
 ### Current CI scope
 
-The GitHub Actions workflow in this repository ([`.github/workflows/reference-tests.yml`](../.github/workflows/reference-tests.yml)) invokes the decision resolver, Source Read Gate, Context Router preflight, Context Selection, and Selective Recall runtime suites, followed by `python -m compileall reference runtime tests`, on pull requests and pushes.
+The GitHub Actions workflow in this repository ([`.github/workflows/reference-tests.yml`](../.github/workflows/reference-tests.yml)) invokes the decision resolver, Source Read Gate, Context Router preflight, Context Selection, Selective Recall runtime, and Work Gate suites, followed by `python -m compileall reference runtime tests`, on pull requests and pushes.
 
 ## Sanitized validation results
 

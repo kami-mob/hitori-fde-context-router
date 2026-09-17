@@ -22,5 +22,7 @@ jobs:
         run: python tests/test_context_selection.py
       - name: Run Selective Recall runtime suite
         run: python tests/test_selective_recall_runtime.py
+      - name: Run Work Gate suite
+        run: python tests/test_work_gate.py
       - name: Compile public Python reference
         run: python -m compileall reference runtime tests
