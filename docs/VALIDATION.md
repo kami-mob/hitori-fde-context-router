@@ -79,7 +79,7 @@ The public repository does not include workspace-specific source names, paths, p
 
 ## Public reproducible reference checks
 
-The public repository contains six small dependency-free Python reference surfaces.
+The public repository contains seven small dependency-free Python reference surfaces.
 
 ### Decision resolver
 
@@ -160,6 +160,23 @@ The suite contains **18 tests**. It covers the step 4 boundary described in [`WO
 
 These tests exercise only a pure/local classifier over caller-supplied values. They do not prove that the caller detected a real production or permission condition correctly, and a `PROCEED` result is not execution authority.
 
+### Re-sync Gate material-boundary classifier
+
+```bash
+python tests/test_resync_gate.py
+```
+
+The suite contains **9 top-level unittest methods**, including a per-signal subtest loop that checks each of the nine step-5 material-boundary fields independently. It covers the boundary described in [`RESYNC_GATE.md`](RESYNC_GATE.md), including:
+
+- no active signal returns `NOT_REQUIRED`;
+- each current/latest, continuation, important-confirmation, implementation, publication/release, production, permission, price/spec/version, or explicit-source-continuation signal independently returns `RESYNC_REQUIRED`;
+- multiple active signals are reported deterministically in declared order;
+- all nine active signals are preserved;
+- `None`, a `dict`, and other non-`ResyncGateRequest` object shapes fail closed as `RESYNC_REQUIRED / malformed_input` instead of raising;
+- non-boolean signal fields fail closed before any malformed value is interpreted as an active boundary.
+
+These tests exercise only a pure/local classifier over caller-supplied material-boundary metadata. They do not prove that the surrounding system detected a real boundary correctly, fetched canonical state, performed a re-sync, or wrote anything back. `RESYNC_REQUIRED` / `NOT_REQUIRED` are classification outcomes only.
+
 A syntax/bytecode check is also supported:
 
 ```bash
@@ -168,7 +185,7 @@ python -m compileall reference runtime tests
 
 ### Current CI scope
 
-The GitHub Actions workflow in this repository ([`.github/workflows/reference-tests.yml`](../.github/workflows/reference-tests.yml)) invokes the decision resolver, Source Read Gate, Context Router preflight, Context Selection, Selective Recall runtime, and Work Gate suites, followed by `python -m compileall reference runtime tests`, on pull requests and pushes.
+The GitHub Actions workflow in this repository ([`.github/workflows/reference-tests.yml`](../.github/workflows/reference-tests.yml)) invokes the decision resolver, Source Read Gate, Context Router preflight, Context Selection, Selective Recall runtime, Work Gate, and Re-sync Gate suites, followed by `python -m compileall reference runtime tests`, on pull requests and pushes.
 
 ## Sanitized validation results
 
@@ -230,4 +247,4 @@ The public reproducible tests and the larger private/integration aggregate evide
 
 The strongest claim supported by the evidence is:
 
-> A resolution-first, selective-recall architecture can be implemented and regression-tested so that old decisions, ambiguous provenance, stale state, unrelated context, conditional safety rules, explicit user-selected source requirements, and bounded selected-context loading are handled explicitly instead of being left entirely to implicit model judgment.
+> A resolution-first, selective-recall architecture can be implemented and regression-tested so that old decisions, ambiguous provenance, stale state, unrelated context, conditional safety rules, explicit user-selected source requirements, bounded selected-context loading, and explicit material-boundary re-sync classification are handled instead of being left entirely to implicit model judgment.
