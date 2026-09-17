@@ -257,3 +257,38 @@ Context Selection docs post-merge CI: **Reference Tests — SUCCESS** (run `3504
 Selective Recall post-merge CI: **Reference Tests — SUCCESS** (run `35095353229`)
 
 Current public runtime/content main before this checklist-only bookkeeping merge is `e6104d073dee99fdd62f8afb8c4dabf25f63f223`, tree `07cb6adf20bc3010ac602fd50c3f532a946225f5`.
+
+## 2026-09-17 Work Gate safety-independence sync review — latest overlay
+
+This section is the latest public-evidence status overlay and supersedes older `Current status`, CI-scope, and non-blocking CI-maintenance sentences above where they conflict.
+
+The bounded Work Gate reference and its public evidence were synchronized through public canonical PR #10 after independent staging review.
+
+- [x] the reviewed Work Gate implementation, focused test suite, and contract document were imported byte-for-byte from the reviewed staging candidate rather than merging the staging PR
+- [x] imported blobs are `reference/work_gate.py` = `4b7e7dcbd60c98952cf2f96b901b762427f30bfa`, `tests/test_work_gate.py` = `c49f859e154af5849e195457732a18ad8176bb7f`, and `docs/WORK_GATE.md` = `12c2ced8de44d3059b0f71ca1def320bf7e99b74`
+- [x] public PR #10 changed exactly nine approved paths: the three imported Work Gate files plus `.github/workflows/reference-tests.yml`, `README.md`, `docs/ARCHITECTURE.md`, `docs/LIMITATIONS.md`, `docs/VALIDATION.md`, and `docs/SHARING_GUIDE.md`
+- [x] malformed `None`, `dict`, and other non-`WorkGateRequest` request objects fail closed as `REVIEW_REQUIRED / malformed_input` instead of raising on field access
+- [x] production and permission triggers remain independent of successful resolution, and only literal `RESOLVED` with no active trigger returns local classifier state `PROCEED`
+- [x] the public documentation explicitly states that Work Gate does not detect real safety conditions, execute work, or create merge/production/permission authority
+- [x] no company/customer/person identifiers, credentials, private URLs, workspace-specific connector configuration, production settings, private repository identifiers, or private operational evidence were introduced by the public patch
+- [x] public PR #10 head `297b2a2620573f127a9084c334b804c79f9a95f0` passed Reference Tests run `35204482871`; the workflow directly executed resolver, Source Read Gate, preflight, Context Selection, Selective Recall, Work Gate, and `compileall reference runtime tests`
+- [x] public PR #10 was merged as `a906771f07da3fc9d7cdd19bc2991d99a003d2e0`, tree `bd0f505523c3335430db5782b35bd302fa21add7`
+- [x] post-merge Reference Tests run `35221004699` succeeded on the exact merge commit
+- [x] merge commit metadata uses GitHub noreply addresses and the merge commit is GitHub-verified
+- [x] the public candidate branch was based on the previously audited clean `main`; its nine preparation commits were bounded to the reviewed public patch before the verified merge
+- [x] staging PR #13 remains open and unmerged; no staging merge, Routine retry, production change, permission change, or secret expansion was performed
+
+Synchronization state for the Work Gate runtime/content: **MERGED_AND_POST_MERGE_VERIFIED**.
+
+This checklist bookkeeping change must pass its own PR CI and requires its own explicit merge decision before it can become the canonical checklist state. It grants no future executor, retry, staging-merge, canonical-import, production, permission, secret, or automatic-import authority.
+
+### Latest public status
+
+**PUBLIC_V0_1_READY**
+
+Policy audit: **PASS**  
+Reachable-history audit baseline: **PASS**  
+Selective Recall post-merge CI: **Reference Tests — SUCCESS** (run `35095353229`)  
+Work Gate post-merge CI: **Reference Tests — SUCCESS** (run `35221004699`)
+
+Current public runtime/content main before this checklist-only bookkeeping merge is `a906771f07da3fc9d7cdd19bc2991d99a003d2e0`, tree `bd0f505523c3335430db5782b35bd302fa21add7`.
