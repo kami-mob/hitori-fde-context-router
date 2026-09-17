@@ -292,3 +292,37 @@ Selective Recall post-merge CI: **Reference Tests — SUCCESS** (run `3509535322
 Work Gate post-merge CI: **Reference Tests — SUCCESS** (run `35221004699`)
 
 Current public runtime/content main before this checklist-only bookkeeping merge is `a906771f07da3fc9d7cdd19bc2991d99a003d2e0`, tree `bd0f505523c3335430db5782b35bd302fa21add7`.
+
+## 2026-09-18 Re-sync Gate material-boundary sync review — latest overlay
+
+This section is the latest public-evidence status overlay and supersedes older `Current status`, CI-scope, surface-count, and checklist-status sentences above where they conflict.
+
+The bounded Re-sync Gate reference and its public evidence were synchronized through public canonical PR #12 after independent staging review.
+
+- [x] the reviewed Re-sync Gate implementation, focused test suite, and contract document were imported byte-for-byte from the reviewed staging candidate rather than merging staging PR #14
+- [x] imported blobs are `reference/resync_gate.py` = `01c7aa7ad89d1f9f657d1eb9ef1e512b75612d80`, `tests/test_resync_gate.py` = `783de06ebaa4cd999ff8707f85483de911c755ec`, and `docs/RESYNC_GATE.md` = `82b28ce55a963ec1d231b0d21c5ca1b47998707c`
+- [x] public PR #12 changed exactly nine reviewed paths: the three imported Re-sync Gate files plus `.github/workflows/reference-tests.yml`, `README.md`, `docs/ARCHITECTURE.md`, `docs/LIMITATIONS.md`, `docs/VALIDATION.md`, and `docs/SHARING_GUIDE.md`
+- [x] malformed request objects and non-boolean signal fields fail closed as `RESYNC_REQUIRED / malformed_input` instead of raising or being interpreted as active boundaries
+- [x] each of the nine caller-supplied material-boundary signals independently returns `RESYNC_REQUIRED`, multiple signals are reported deterministically, and only a well-formed request with no active signal returns `NOT_REQUIRED`
+- [x] the public documentation explicitly states that Re-sync Gate does not detect material boundaries itself, fetch canonical state, perform retrieval/writeback, invoke tools, or create authority
+- [x] no company/customer/person identifiers, credentials, private URLs, workspace-specific connector configuration, production settings, private repository identifiers, or private operational evidence were introduced by the public patch
+- [x] public PR #12 head `3d27e56234f5db72b78684bbb69a71c4db097ba3` passed Reference Tests run `35277508033`; the workflow directly executed resolver, Source Read Gate, preflight, Context Selection, Selective Recall, Work Gate, Re-sync Gate, and `compileall reference runtime tests`
+- [x] public PR #12 was merged as `5a30bfff2aed5ca2d59262fea252aac72403860d`, tree `cc96dfeed0ce5aa77b15cdacedd0ee69a48d18ca`
+- [x] post-merge Reference Tests run `35277687786` succeeded on the exact merge commit
+- [x] merge commit metadata uses GitHub noreply addresses and the merge commit is GitHub-verified
+- [x] staging PR #14 remains open and unmerged; no staging merge, Routine retry, production change, permission change, or secret expansion was performed
+
+Synchronization state for the Re-sync Gate runtime/content: **MERGED_AND_POST_MERGE_VERIFIED**.
+
+This checklist bookkeeping change is a one-file evidence update. It must pass its own PR CI and post-merge CI before this overlay becomes the canonical checklist state. It grants no future executor, retry, staging-merge, canonical-import, production, permission, secret, or automatic-import authority.
+
+### Latest public status
+
+**PUBLIC_V0_1_READY**
+
+Policy audit: **PASS**  
+Reachable-history audit baseline: **PASS**  
+Work Gate post-merge CI: **Reference Tests — SUCCESS** (run `35221004699`)  
+Re-sync Gate post-merge CI: **Reference Tests — SUCCESS** (run `35277687786`)
+
+Current public runtime/content main before this checklist-only bookkeeping merge is `5a30bfff2aed5ca2d59262fea252aac72403860d`, tree `cc96dfeed0ce5aa77b15cdacedd0ee69a48d18ca`.
