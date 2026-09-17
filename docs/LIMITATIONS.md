@@ -16,19 +16,21 @@ Explicit resolution, source-read gates, and fail-closed states reduce some class
 - every source connector remains available
 - every live system value is current
 - every safety condition is detected without suitable metadata or rules
+- every caller supplies correct production/permission trigger metadata
 - every model follows an instruction perfectly
 
 ## The public reference code is deliberately bounded
 
-This repository now contains five dependency-free Python reference surfaces:
+This repository now contains six dependency-free Python reference surfaces:
 
 - `reference/minimal_resolver.py` demonstrates the **decision-resolution contract**.
 - `reference/source_read_gate.py` demonstrates **pure/local Source Read Gate outcome logic** from caller-supplied request metadata and `read_log`.
 - `reference/context_router_preflight.py` demonstrates the **pure/local composition** of the two functions above, sequencing them in the conditional order [`ARCHITECTURE.md`](ARCHITECTURE.md) specifies for steps 0 and 1. See [`CONTEXT_ROUTER_PREFLIGHT.md`](CONTEXT_ROUTER_PREFLIGHT.md).
 - `reference/context_selection.py` demonstrates **step 2 planning** — deciding which already-scored, already-tiered candidates belong in the HOT/WARM/COLD read plan. See [`CONTEXT_SELECTION.md`](CONTEXT_SELECTION.md).
 - `runtime/selective_recall.py` demonstrates the **step 3 runtime boundary** — validating a `SELECTED` plan and invoking only a caller-supplied loader for IDs already present in that plan. See [`SELECTIVE_RECALL_RUNTIME.md`](SELECTIVE_RECALL_RUNTIME.md).
+- `reference/work_gate.py` demonstrates the **step 4 safety-independence boundary** — validating a caller-supplied request and classifying the upstream decision state together with explicit production/permission triggers. See [`WORK_GATE.md`](WORK_GATE.md).
 
-The first four surfaces do **not**:
+The resolver, Source Read Gate, preflight, Context Selection, and Work Gate surfaces do **not**:
 
 - connect to external repositories or document stores
 - fetch a user-designated document
@@ -36,6 +38,7 @@ The first four surfaces do **not**:
 - detect every product-level continuation/source designation automatically
 - enforce the Source Read Gate end-to-end at the connector or product integration layer
 - score, classify, or determine relevance of any candidate context on their own
+- discover production/permission safety conditions from the environment on their own
 
 `source_read_gate.py` can model continuation, source availability, AND/OR requirements, and no-external-read constraints when those facts are supplied by the caller. It does not discover or prove those facts itself.
 
@@ -63,7 +66,9 @@ error handling. The reference records `str(exception)` for a failed loader call;
 must not place credentials or other sensitive material in loader exception messages that
 may be propagated in the returned failure mapping.
 
-The Explicit Source Read Gate described in [`SOURCE_READ_GATE.md`](SOURCE_READ_GATE.md) is therefore both a public behavioral contract and a small reproducible decision model, but it is not a complete retrieval or connector implementation. The Selective Recall runtime similarly demonstrates a bounded execution boundary without turning this repository into a complete production retrieval stack.
+`reference/work_gate.py` is likewise a local classification boundary, not a detector or executor. It trusts the caller to supply the upstream `decision_state`, `production_trigger`, and `permission_trigger` values. It can fail closed on malformed request shape and can preserve the independence of an explicitly supplied safety trigger, but it cannot prove that a real production/permission condition was detected upstream. Its `PROCEED` result means only that the supplied decision state is `RESOLVED` and neither supplied trigger is active; it does not grant permission to execute work, mutate production or permissions, merge code, or bypass any surrounding governance.
+
+The Explicit Source Read Gate described in [`SOURCE_READ_GATE.md`](SOURCE_READ_GATE.md) is therefore both a public behavioral contract and a small reproducible decision model, but it is not a complete retrieval or connector implementation. The Selective Recall runtime similarly demonstrates a bounded execution boundary without turning this repository into a complete production retrieval stack. The Work Gate demonstrates safety-independent classification without becoming a production authorization system.
 
 ## Canonical sources still matter
 
@@ -76,6 +81,8 @@ If a user explicitly designates a source and that source is unavailable, a simil
 Likewise, the Source Read Gate reference model can only evaluate the `read_log` and source-status information it receives. Incorrect caller-supplied evidence can produce an incorrect gate result.
 
 A Selective Recall plan also depends on caller-supplied candidate metadata. If the wrong IDs were selected upstream, the runtime's plan-bounded loading cannot correct that semantic mistake on its own.
+
+A Work Gate result also depends on caller-supplied decision and trigger metadata. If a real safety condition exists but the caller supplies a false trigger value, this pure/local reference cannot discover the omission by itself.
 
 ## Volatile state requires live verification
 
@@ -93,6 +100,8 @@ Reported validation counts demonstrate regression coverage for the tested implem
 - proof that all external source connectors will fail closed identically
 - proof that the public pure/local gate model guarantees an external read actually happened
 - proof that an arbitrary caller-supplied loader is safe, correct, or source-authentic
+- proof that production/permission triggers will always be detected correctly upstream
+- proof that a Work Gate `PROCEED` result is execution authority
 
 ## Public examples are synthetic
 
