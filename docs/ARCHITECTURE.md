@@ -29,7 +29,10 @@ User Request
 3. Selective Recall
    HOT / WARM / COLD
     ↓
-4. Work
+4. Work Gate
+   Resolution state + Production / Permission trigger
+    ↓
+Work
     ↓
 5. Re-sync / Writeback when material
 ```
@@ -152,7 +155,7 @@ to prove that a particular external connector or source was used correctly.
 
 See [`SELECTIVE_RECALL_RUNTIME.md`](SELECTIVE_RECALL_RUNTIME.md) for the full contract.
 
-## 4. Safety independence
+## 4. Safety independence / Work Gate
 
 Safety is not a successful-resolution side effect.
 
@@ -160,9 +163,21 @@ A production or permission trigger must still fire when the decision state is `U
 
 ```text
 Resolution state ───────────────┐
-                               ├─> Work gate
+                               ├─> Work Gate
 Production / Permission trigger┘
 ```
+
+[`reference/work_gate.py`](../reference/work_gate.py) is a dependency-free pure/local reference for this boundary. `evaluate(request)` consumes only a caller-supplied decision state plus explicit `production_trigger` and `permission_trigger` booleans.
+
+It follows three fail-closed rules:
+
+- a request that is not a `WorkGateRequest`, or has malformed field types, returns `REVIEW_REQUIRED / malformed_input` rather than raising;
+- either safety trigger returns `REVIEW_REQUIRED / safety_trigger` regardless of whether the decision state is already `RESOLVED`;
+- when neither trigger fired, only the literal decision state `RESOLVED` returns `PROCEED`; every other state remains `REVIEW_REQUIRED`.
+
+The Work Gate does not detect production or permission conditions itself, execute work, invoke tools, perform I/O, or create authority. In particular, `PROCEED` is only this local classifier's outcome; it is not permission to perform a production, permission, merge, or other governed action.
+
+See [`WORK_GATE.md`](WORK_GATE.md) for the full contract.
 
 ## 5. Long-context re-sync
 
