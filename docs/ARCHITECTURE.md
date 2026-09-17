@@ -195,6 +195,20 @@ Re-sync to canonical state when the user asks for, or the task reaches, a materi
 - price / specification / version change
 - continuation of a task that explicitly designated a saved source
 
+### Reference classifier for step 5
+
+[`reference/resync_gate.py`](../reference/resync_gate.py) is a dependency-free pure/local reference for this boundary. `evaluate(request)` consumes nine caller-supplied booleans corresponding 1:1 to the material-boundary signals above.
+
+It follows three bounded rules:
+
+- a request that is not a `ResyncGateRequest`, or has any non-boolean signal field, fails closed as `RESYNC_REQUIRED / malformed_input` rather than raising;
+- any active material-boundary signal returns `RESYNC_REQUIRED / material_boundary`, with every active signal reported deterministically;
+- only a well-formed request with no active signal returns `NOT_REQUIRED`.
+
+The Re-sync Gate does not detect those conditions itself, fetch canonical state, perform retrieval, write back records, invoke tools, or create authority. `RESYNC_REQUIRED` and `NOT_REQUIRED` are classification outcomes only; the surrounding system still decides how and whether to perform a canonical re-sync under its own source, safety, and authority rules.
+
+See [`RESYNC_GATE.md`](RESYNC_GATE.md) for the full contract.
+
 ## 6. Writeback
 
 Important confirmed decisions should be persisted outside the transient AI conversation.
