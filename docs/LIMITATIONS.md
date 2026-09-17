@@ -17,11 +17,12 @@ Explicit resolution, source-read gates, and fail-closed states reduce some class
 - every live system value is current
 - every safety condition is detected without suitable metadata or rules
 - every caller supplies correct production/permission trigger metadata
+- every caller supplies correct material-boundary metadata for re-sync decisions
 - every model follows an instruction perfectly
 
 ## The public reference code is deliberately bounded
 
-This repository now contains six dependency-free Python reference surfaces:
+This repository now contains seven dependency-free Python reference surfaces:
 
 - `reference/minimal_resolver.py` demonstrates the **decision-resolution contract**.
 - `reference/source_read_gate.py` demonstrates **pure/local Source Read Gate outcome logic** from caller-supplied request metadata and `read_log`.
@@ -29,8 +30,9 @@ This repository now contains six dependency-free Python reference surfaces:
 - `reference/context_selection.py` demonstrates **step 2 planning** — deciding which already-scored, already-tiered candidates belong in the HOT/WARM/COLD read plan. See [`CONTEXT_SELECTION.md`](CONTEXT_SELECTION.md).
 - `runtime/selective_recall.py` demonstrates the **step 3 runtime boundary** — validating a `SELECTED` plan and invoking only a caller-supplied loader for IDs already present in that plan. See [`SELECTIVE_RECALL_RUNTIME.md`](SELECTIVE_RECALL_RUNTIME.md).
 - `reference/work_gate.py` demonstrates the **step 4 safety-independence boundary** — validating a caller-supplied request and classifying the upstream decision state together with explicit production/permission triggers. See [`WORK_GATE.md`](WORK_GATE.md).
+- `reference/resync_gate.py` demonstrates the **step 5 material-boundary classifier** — validating caller-supplied re-sync signals and deterministically returning `RESYNC_REQUIRED` / `NOT_REQUIRED`. See [`RESYNC_GATE.md`](RESYNC_GATE.md).
 
-The resolver, Source Read Gate, preflight, Context Selection, and Work Gate surfaces do **not**:
+The resolver, Source Read Gate, preflight, Context Selection, Work Gate, and Re-sync Gate surfaces do **not**:
 
 - connect to external repositories or document stores
 - fetch a user-designated document
@@ -39,6 +41,8 @@ The resolver, Source Read Gate, preflight, Context Selection, and Work Gate surf
 - enforce the Source Read Gate end-to-end at the connector or product integration layer
 - score, classify, or determine relevance of any candidate context on their own
 - discover production/permission safety conditions from the environment on their own
+- detect every material re-sync boundary from the conversation or environment on their own
+- fetch canonical current state or perform writeback on their own
 
 `source_read_gate.py` can model continuation, source availability, AND/OR requirements, and no-external-read constraints when those facts are supplied by the caller. It does not discover or prove those facts itself.
 
@@ -68,7 +72,9 @@ may be propagated in the returned failure mapping.
 
 `reference/work_gate.py` is likewise a local classification boundary, not a detector or executor. It trusts the caller to supply the upstream `decision_state`, `production_trigger`, and `permission_trigger` values. It can fail closed on malformed request shape and can preserve the independence of an explicitly supplied safety trigger, but it cannot prove that a real production/permission condition was detected upstream. Its `PROCEED` result means only that the supplied decision state is `RESOLVED` and neither supplied trigger is active; it does not grant permission to execute work, mutate production or permissions, merge code, or bypass any surrounding governance.
 
-The Explicit Source Read Gate described in [`SOURCE_READ_GATE.md`](SOURCE_READ_GATE.md) is therefore both a public behavioral contract and a small reproducible decision model, but it is not a complete retrieval or connector implementation. The Selective Recall runtime similarly demonstrates a bounded execution boundary without turning this repository into a complete production retrieval stack. The Work Gate demonstrates safety-independent classification without becoming a production authorization system.
+`reference/resync_gate.py` is also a local classification boundary. It trusts the caller to supply nine material-boundary booleans. It can fail closed on malformed request shape or field types and can deterministically report every supplied active signal, but it cannot prove that a real current/latest, continuation, implementation, publication, production, permission, price/spec/version, or explicit-source-continuation boundary was detected correctly. Its `RESYNC_REQUIRED` result does not perform or authorize retrieval or writeback, and `NOT_REQUIRED` does not prove that the caller omitted no real boundary.
+
+The Explicit Source Read Gate described in [`SOURCE_READ_GATE.md`](SOURCE_READ_GATE.md) is therefore both a public behavioral contract and a small reproducible decision model, but it is not a complete retrieval or connector implementation. The Selective Recall runtime similarly demonstrates a bounded execution boundary without turning this repository into a complete production retrieval stack. The Work Gate demonstrates safety-independent classification without becoming a production authorization system. The Re-sync Gate demonstrates material-boundary classification without becoming a canonical-state retrieval or writeback engine.
 
 ## Canonical sources still matter
 
@@ -83,6 +89,8 @@ Likewise, the Source Read Gate reference model can only evaluate the `read_log` 
 A Selective Recall plan also depends on caller-supplied candidate metadata. If the wrong IDs were selected upstream, the runtime's plan-bounded loading cannot correct that semantic mistake on its own.
 
 A Work Gate result also depends on caller-supplied decision and trigger metadata. If a real safety condition exists but the caller supplies a false trigger value, this pure/local reference cannot discover the omission by itself.
+
+A Re-sync Gate result likewise depends on caller-supplied material-boundary metadata. If a material boundary exists but the caller supplies all signals as false, this pure/local reference cannot discover the omission or force a real canonical read.
 
 ## Volatile state requires live verification
 
@@ -102,6 +110,8 @@ Reported validation counts demonstrate regression coverage for the tested implem
 - proof that an arbitrary caller-supplied loader is safe, correct, or source-authentic
 - proof that production/permission triggers will always be detected correctly upstream
 - proof that a Work Gate `PROCEED` result is execution authority
+- proof that all material re-sync boundaries will always be detected correctly upstream
+- proof that a Re-sync Gate result itself performs, authorizes, or proves a canonical re-sync
 
 ## Public examples are synthetic
 
