@@ -16,6 +16,8 @@ jobs:
         run: python tests/test_resolver.py
       - name: Run Source Read Gate reference suite
         run: python -m unittest discover -s tests -p 'test_source_read_gate.py'
+      - name: Run Source Read Observation suite
+        run: python tests/test_source_read_observation.py
       - name: Run Context Router preflight suite
         run: python tests/test_context_router_preflight.py
       - name: Run Context Selection suite
