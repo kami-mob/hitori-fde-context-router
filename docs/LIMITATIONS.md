@@ -52,6 +52,8 @@ The resolver, Source Read Gate, Source Read Observation, Source Read Evidence, p
 
 `source_read_observation.py` binds only values the caller already supplied. Its source identity hash, source-version binding hash, and raw-payload hash do not prove that an external read occurred, that the named source produced those bytes, or that the source is authentic, fresh, authorized, complete, or otherwise trustworthy. The module deliberately performs no connector selection, authentication, network/filesystem I/O, permission lookup, clock read, persistence, or normalization of raw payload bytes. Its UTF-8 check exists only to keep malformed text fail-closed before hashing.
 
+`source_read_evidence.py` adds no new provenance or trust semantics. It invokes `observe()` freshly and freezes only `source_id` plus the three resulting hashes when the observation succeeds. It excludes raw payload bytes and the raw source-version string and accepts no caller-supplied precomputed hash. An `EVIDENCED` result is not proof of a real read and is not a Source Read Gate `PASS`; this module never evaluates the gate.
+
 `context_router_preflight.py` adds no behavior beyond sequencing the two composed
 functions: it introduces no I/O, retrieval, external model invocation, agentic execution,
 HOT/WARM/COLD loading, or production runtime, and it does not change either composed
