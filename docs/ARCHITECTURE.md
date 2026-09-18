@@ -70,6 +70,12 @@ existing functions without adding new I/O, retrieval, or behavior of its own. Se
 [`CONTEXT_ROUTER_PREFLIGHT.md`](CONTEXT_ROUTER_PREFLIGHT.md) for the full composition
 contract.
 
+### Source Read Observation support boundary
+
+[`reference/source_read_observation.py`](../reference/source_read_observation.py) is a separate pure/local support surface beneath the Source Read Gate. It accepts only caller-supplied in-memory `source_id`, `source_version`, and exact raw `bytes`, validates the request fail-closed (including malformed top-level objects and non-UTF-8-encodable text), and returns deterministic SHA-256 bindings for source identity, identity+version, and raw payload.
+
+This surface does **not** perform the external read, choose or authenticate a connector, verify that the named source produced the supplied bytes, check freshness or permissions, establish completeness, or create source authenticity/provenance. An `OBSERVED` result means only that the supplied values passed the local contract and were deterministically bound. See [`SOURCE_READ_OBSERVATION.md`](SOURCE_READ_OBSERVATION.md).
+
 ## 1. Resolution Kernel
 
 Resolve the smallest relevant decision scope before broad context retrieval:

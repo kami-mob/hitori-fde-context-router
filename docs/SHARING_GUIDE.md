@@ -1,6 +1,6 @@
 # Sharing Guide
 
-Use this repository as technical evidence for a **resolution-first Context Router** design for AI external memory, including an explicit-source grounding contract, bounded selective recall, a pure/local Work Gate for safety-independent classification, a pure/local Re-sync Gate for material-boundary classification, and a pure/local Writeback Gate for authority-sensitive writeback-candidate classification.
+Use this repository as technical evidence for a **resolution-first Context Router** design for AI external memory, including an explicit-source grounding contract, a pure/local Source Read Observation value-binding boundary, bounded selective recall, a pure/local Work Gate for safety-independent classification, a pure/local Re-sync Gate for material-boundary classification, and a pure/local Writeback Gate for authority-sensitive writeback-candidate classification.
 
 ## One-sentence description
 
@@ -12,7 +12,7 @@ Context Router addresses failure modes that retrieval alone does not solve: exte
 
 The design therefore combines an **Explicit Source Read Gate**, a **Resolution Kernel**, selective recall, a **Work Gate**, a **Re-sync Gate**, and a **Writeback Gate**, using explicit `RESOLVED / UNKNOWN / CONFLICT / VERIFY / DATA_ERROR` outcomes plus explicit re-sync and writeback-candidate classification instead of silent guessing.
 
-The public Source Read Gate code is deliberately bounded: it evaluates caller-supplied source/read state and does not itself connect to or fetch from external systems. The Selective Recall runtime loads only an already-selected plan through a caller-supplied loader. The public Work Gate is also deliberately bounded: it classifies a caller-supplied decision state together with explicit production/permission trigger booleans, and does not detect those conditions, execute work, or grant authority itself. The public Re-sync Gate similarly classifies caller-supplied material-boundary booleans; it does not detect those boundaries itself, fetch canonical state, perform writeback, invoke tools, or grant authority. The public Writeback Gate classifies caller-supplied origin/status/importance, blocks AI-proposed `ACTIVE` / `LOCKED` status, and does not persist records, infer confirmation, or grant authority.
+The public Source Read Gate code is deliberately bounded: it evaluates caller-supplied source/read state and does not itself connect to or fetch from external systems. The Source Read Observation surface is also deliberately bounded: it validates and hashes caller-supplied source identity/version/raw bytes, but does not prove a real read, source authenticity, freshness, authorization, completeness, or external provenance. The Selective Recall runtime loads only an already-selected plan through a caller-supplied loader. The public Work Gate is also deliberately bounded: it classifies a caller-supplied decision state together with explicit production/permission trigger booleans, and does not detect those conditions, execute work, or grant authority itself. The public Re-sync Gate similarly classifies caller-supplied material-boundary booleans; it does not detect those boundaries itself, fetch canonical state, perform writeback, invoke tools, or grant authority. The public Writeback Gate classifies caller-supplied origin/status/importance, blocks AI-proposed `ACTIVE` / `LOCKED` status, and does not persist records, infer confirmation, or grant authority.
 
 ## Evidence you may cite
 
@@ -22,6 +22,7 @@ The sanitized public repository contains:
 - Explicit Source Read Gate contract
 - dependency-free minimal Python decision resolver
 - dependency-free pure/local Source Read Gate outcome model
+- dependency-free pure/local Source Read Observation value-binding model
 - pure/local Context Router preflight composition
 - dependency-free Context Selection planner
 - bounded Selective Recall runtime boundary
@@ -29,7 +30,7 @@ The sanitized public repository contains:
 - dependency-free pure/local Re-sync Gate material-boundary classifier
 - dependency-free pure/local Writeback Gate authority-boundary classifier
 - synthetic fixture data
-- reproducible public suites for resolver, Source Read Gate, preflight, Context Selection, Selective Recall, Work Gate, Re-sync Gate, and Writeback Gate
+- reproducible public suites for resolver, Source Read Gate, Source Read Observation, preflight, Context Selection, Selective Recall, Work Gate, Re-sync Gate, Writeback Gate, and synthetic lifecycle integration
 - GitHub Actions CI for all published public reference suites plus compileall
 - sanitized aggregate validation results from a larger implementation
 - dedicated private/integration source-read regression evidence: 10/10 PASS
@@ -43,6 +44,10 @@ The sanitized public repository contains:
 For the public Source Read Gate code specifically, an accurate narrower claim is:
 
 > A dependency-free local model can deterministically evaluate declared-source requirements, caller-supplied read evidence, source availability, AND/OR semantics, continuation metadata, and no-external-read constraints without performing external I/O.
+
+For the public Source Read Observation code specifically, an accurate narrower claim is:
+
+> A dependency-free local model can fail closed on malformed caller-supplied source metadata and deterministically bind source identity, source version, and exact raw payload bytes into SHA-256 values without performing external I/O or claiming authenticity, freshness, authorization, completeness, or provenance.
 
 For the public Work Gate code specifically, an accurate narrower claim is:
 
@@ -65,6 +70,7 @@ Do not describe this repository as proof that:
 - all models will behave identically
 - the public reference code is the complete production implementation
 - `source_read_gate.py` itself performs external connector I/O, proves that a real fetch occurred, or enforces the Source Read Gate end-to-end
+- `source_read_observation.py` proves that supplied bytes came from the named external source, or proves source authenticity, freshness, authorization, completeness, or connector provenance
 - every future phrasing of an explicit-source request will be recognized correctly
 - every future context structure is covered
 - `work_gate.py` itself detects production/permission conditions from the environment
