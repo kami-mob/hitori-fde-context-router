@@ -385,3 +385,27 @@ This section is the latest public-evidence status overlay for the synthetic cros
 Synchronization state for the lifecycle integration evidence: **MERGED_AND_POST_MERGE_VERIFIED**.
 
 This bookkeeping overlay grants no future executor, retry, staging-merge, automatic-import, production, permission, secret, or product-execution authority.
+
+
+## 2026-09-18 Source Read Observation value-binding sync review — latest overlay
+
+This section is the latest public-evidence status overlay for the Source Read Observation boundary.
+
+- [x] source staging PR #21 remains **OPEN / NOT_MERGED** and was not used as a merge path
+- [x] reviewed source base was `974ccd3aaff8da8cbaea41a569ac75bddb6eb07f`; reviewed source head was `49498db2790f978b0105d5a992c187d778b24d8f`
+- [x] source PR changed exactly `reference/source_read_observation.py`, `tests/test_source_read_observation.py`, and `docs/SOURCE_READ_OBSERVATION.md`
+- [x] imported blobs are byte-identical to the independently reviewed source: reference `e7d4ae46be0bda0243d312235f8fdc80ff8d4061`, tests `f731ea6b0f7b272a9b74cb2e584bc39bcebb8ab7`, document `a4d68d9cf09d8de51fad83cad2478d26b88f2cb1`
+- [x] public implementation PR #18 changed exactly nine reviewed paths: the three imported files plus `.github/workflows/reference-tests.yml`, `README.md`, `docs/ARCHITECTURE.md`, `docs/LIMITATIONS.md`, `docs/VALIDATION.md`, and `docs/SHARING_GUIDE.md`
+- [x] public candidate head `a36997771d339d602d575e2bfabcf5d9d40a03eb` passed Reference Tests run `35315174922`
+- [x] candidate CI directly ran `python tests/test_source_read_observation.py` in addition to every existing component suite, the lifecycle integration suite, and compileall
+- [x] public implementation PR #18 merged as `0c9f1e2750085dc37de91059c6a2d3318765f9c3`
+- [x] post-merge Reference Tests run `35315229325` succeeded on the exact merge commit
+- [x] the public Source Read Observation surface fails closed on malformed top-level request objects and non-UTF-8-encodable source text, preserves deterministic hashes for valid inputs, and hashes raw payload bytes without decoding or normalization
+- [x] `OBSERVED` is documented as deterministic caller-supplied value binding only; it does not prove a real external read, source authenticity, freshness, authorization, completeness, or connector provenance
+- [x] no company/customer/person identifiers, credentials, private operational URLs/paths, production configuration, private repository identifiers, or connector secrets were introduced in the public patch
+- [x] no staging merge, automatic staging-to-canonical import, Routine retry, production change, permission change, secret expansion, or authority inheritance occurred
+- [x] publication status remains **PUBLIC_V0_1_READY**
+
+Synchronization state for the Source Read Observation implementation: **MERGED_AND_POST_MERGE_VERIFIED**.
+
+This bookkeeping overlay grants no future executor, retry, staging-merge, automatic-import, production, permission, secret, or product-execution authority.
