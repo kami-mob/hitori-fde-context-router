@@ -49,8 +49,8 @@ Writeback Gate (writeback-candidate classification)
 1. Read the architecture below.
 2. See [`docs/SOURCE_READ_GATE.md`](docs/SOURCE_READ_GATE.md) for the explicit-source grounding contract.
 3. See [`docs/DECISION_RESOLUTION_SPEC.md`](docs/DECISION_RESOLUTION_SPEC.md) for the resolution contract.
-4. See [`docs/CONTEXT_SELECTION.md`](docs/CONTEXT_SELECTION.md) for the step 2 Context Router planning reference, [`docs/SELECTIVE_RECALL_RUNTIME.md`](docs/SELECTIVE_RECALL_RUNTIME.md) for the bounded step 3 loading boundary, [`docs/WORK_GATE.md`](docs/WORK_GATE.md) for the step 4 safety-independence boundary, [`docs/RESYNC_GATE.md`](docs/RESYNC_GATE.md) for the step 5 material-boundary classifier, and [`docs/WRITEBACK_GATE.md`](docs/WRITEBACK_GATE.md) for the step 6 writeback-candidate classifier.
-5. Run the reference suites: `python tests/test_resolver.py`, `python -m unittest discover -s tests -p test_source_read_gate.py`, `python tests/test_context_router_preflight.py`, `python tests/test_context_selection.py`, `python tests/test_selective_recall_runtime.py`, `python tests/test_work_gate.py`, `python tests/test_resync_gate.py`, and `python tests/test_writeback_gate.py`.
+4. See [`docs/CONTEXT_SELECTION.md`](docs/CONTEXT_SELECTION.md) for the step 2 Context Router planning reference, [`docs/SELECTIVE_RECALL_RUNTIME.md`](docs/SELECTIVE_RECALL_RUNTIME.md) for the bounded step 3 loading boundary, [`docs/WORK_GATE.md`](docs/WORK_GATE.md) for the step 4 safety-independence boundary, [`docs/RESYNC_GATE.md`](docs/RESYNC_GATE.md) for the step 5 material-boundary classifier, and [`docs/WRITEBACK_GATE.md`](docs/WRITEBACK_GATE.md) for the step 6 writeback-candidate classifier. See [`docs/REFERENCE_LIFECYCLE_INTEGRATION.md`](docs/REFERENCE_LIFECYCLE_INTEGRATION.md) for synthetic cross-surface composition evidence.
+5. Run the reference suites, including `python tests/test_reference_lifecycle_integration.py` for the two chain-level composition checks.
 6. Read [`docs/VALIDATION.md`](docs/VALIDATION.md) for public reproducible checks and sanitized evidence from the larger private implementation.
 7. Read [`docs/LIMITATIONS.md`](docs/LIMITATIONS.md) before interpreting the results.
 
@@ -159,6 +159,7 @@ Operational templates, workspace-specific installation materials, migration pack
 - `docs/WORK_GATE.md` — pure/local Work Gate contract for safety independence (step 4)
 - `docs/RESYNC_GATE.md` — pure/local Re-sync Gate contract for material-boundary classification (step 5)
 - `docs/WRITEBACK_GATE.md` — pure/local Writeback Gate contract for writeback-candidate classification (step 6)
+- `docs/REFERENCE_LIFECYCLE_INTEGRATION.md` — synthetic cross-surface composition evidence across the published step-0-through-step-6 interfaces
 - `docs/VALIDATION.md` — validation methodology and sanitized results
 - `docs/LIMITATIONS.md` — what the evidence does and does not prove
 - `docs/SHARING_GUIDE.md` — wording for referencing this work accurately
@@ -180,7 +181,8 @@ Operational templates, workspace-specific installation materials, migration pack
 - `tests/test_work_gate.py` — Work Gate fail-closed and safety-independence tests
 - `tests/test_resync_gate.py` — Re-sync Gate material-boundary and malformed-input tests
 - `tests/test_writeback_gate.py` — Writeback Gate authority-boundary and malformed-input tests
-- `.github/workflows/reference-tests.yml` — CI for all public Python reference suites plus compileall
+- `tests/test_reference_lifecycle_integration.py` — two synthetic chain-level composition tests across the published interfaces
+- `.github/workflows/reference-tests.yml` — CI for all public Python reference suites, the lifecycle integration suite, and compileall
 - `PUBLICATION_CHECKLIST.md` — publication safety boundary
 
 ## Evidence summary
@@ -218,6 +220,7 @@ This repository now contains eight dependency-free Python reference surfaces. Th
 Run locally:
 
 ```bash
+python tests/test_reference_lifecycle_integration.py
 python tests/test_writeback_gate.py
 python tests/test_resync_gate.py
 python tests/test_work_gate.py
@@ -231,7 +234,7 @@ python -m compileall reference runtime tests
 
 The Source Read Gate unittest suite contains 32 tests in this reference, including regression guards for the existing decision resolver. The Context Selection suite contains 18 tests, the Context Router Preflight suite contains 7 tests, the Selective Recall runtime suite contains 12 tests, the Work Gate suite contains 18 tests, the Re-sync Gate suite contains 9 top-level unittest methods (including per-signal subtests across all nine material-boundary fields), and the Writeback Gate suite contains 15 tests.
 
-The GitHub Actions workflow in this repository ([`.github/workflows/reference-tests.yml`](.github/workflows/reference-tests.yml)) runs the resolver, Source Read Gate, preflight, Context Selection, Selective Recall, Work Gate, Re-sync Gate, and Writeback Gate suites plus `compileall` on pull requests and pushes.
+The GitHub Actions workflow in this repository ([`.github/workflows/reference-tests.yml`](.github/workflows/reference-tests.yml)) runs the resolver, Source Read Gate, preflight, Context Selection, Selective Recall, Work Gate, Re-sync Gate, Writeback Gate, and the synthetic lifecycle integration suite plus `compileall` on pull requests and pushes.
 
 ## Status
 
