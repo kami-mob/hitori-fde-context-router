@@ -34,7 +34,9 @@ User Request
     ↓
 Work
     ↓
-5. Re-sync / Writeback when material
+5. Re-sync when material
+    ↓
+6. Writeback candidate classification
 ```
 
 ## 0. Explicit Source Read Gate
@@ -222,3 +224,13 @@ Examples:
 - implementation status
 
 The AI may propose a writeback, but proposal status must not be silently promoted to authoritative status.
+
+### Reference classifier for step 6
+
+[`reference/writeback_gate.py`](../reference/writeback_gate.py) is a dependency-free pure/local classifier for this boundary. The caller supplies `origin` (`USER_CONFIRMED` / `AI_PROPOSAL`), `requested_status` (`PROPOSED` / `ACTIVE` / `LOCKED`), and an explicit `important` boolean.
+
+- malformed request objects, invalid enum values, or non-boolean `important` fail closed as `REVIEW_REQUIRED / malformed_input`;
+- an `AI_PROPOSAL` may produce a candidate only at `PROPOSED`; `ACTIVE` / `LOCKED` requests fail closed as `REVIEW_REQUIRED / ai_proposal_authoritative_status`;
+- important well-formed input that passes that authority boundary returns `WRITEBACK_CANDIDATE`; non-important input returns `NOT_REQUIRED`.
+
+The Writeback Gate performs no persistence, external I/O, mutation, status promotion, or authority creation. `WRITEBACK_CANDIDATE` is not an authoritative record and does not itself authorize any write. See [`WRITEBACK_GATE.md`](WRITEBACK_GATE.md) for the full contract.
