@@ -26,5 +26,7 @@ jobs:
         run: python tests/test_work_gate.py
       - name: Run Re-sync Gate suite
         run: python tests/test_resync_gate.py
+      - name: Run Writeback Gate suite
+        run: python tests/test_writeback_gate.py
       - name: Compile public Python reference
         run: python -m compileall reference runtime tests
