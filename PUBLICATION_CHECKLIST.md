@@ -359,3 +359,29 @@ Reachable-history audit baseline: **PASS**
 Writeback Gate tested candidate CI: **Reference Tests — SUCCESS** (run `35298366580`)
 
 Current public runtime/content main before this checklist-only bookkeeping merge is `4ba23912bdc99ec93c9c4c837a4a934b69416db3`, tree `bd617062dcf0a7d6a91c5a4f9222e5286bddffb9`.
+
+## 2026-09-18 Reference lifecycle integration sync review — latest overlay
+
+This section is the latest public-evidence status overlay for the synthetic cross-surface lifecycle integration evidence.
+
+- [x] source staging PR #18 remains **OPEN / NOT_MERGED** and was not used as a merge path
+- [x] reviewed source base was `e2bcf732eb73075547f4edcd4a69a878b8838756`; reviewed source head was `81470ffc62b611b44e4e428edcc1f759f55c9324`
+- [x] source PR changed exactly `tests/test_reference_lifecycle_integration.py` and `docs/REFERENCE_LIFECYCLE_INTEGRATION.md`
+- [x] those two imported blobs are byte-identical to the independently reviewed source: test `03a6feb6288c3aa4328b89288c1bf8bc9665e61d`, document `d7041c3d1f5120d9c5d202fd204dc8b841dc6be2`
+- [x] the public implementation PR #16 added only sanitized public evidence plus narrowly scoped README / Validation / Limitations / Sharing Guide / CI maintenance
+- [x] public candidate head `1063c92d58ec95b57a2574498da1dbd3a2b10e25` passed Reference Tests run `35307261085`
+- [x] candidate CI directly ran `python tests/test_reference_lifecycle_integration.py` in addition to all existing component suites and compileall
+- [x] public implementation PR #16 merged as `113256e2994081e1a1ce6fe0530e1a1ccb32ac38`, tree `942be6861cdfd83364e58cca0d1c1aeefaa31525`
+- [x] post-merge Reference Tests run `35307298006` succeeded on the exact merge commit, including the lifecycle integration suite
+- [x] the integration evidence proves two representative **synthetic, in-memory** chains across existing published interfaces; it adds no new runtime/orchestrator and grants no execution/write authority
+- [x] Security / confidentiality review passed: no company/customer/person identifiers, credentials, private operational URLs/paths, production configuration, or connector secrets were introduced
+- [x] public-repository searches for the private staging/governance repository names, the private execution id, controller-comment marker, and one-shot run id returned no matches
+- [x] synthetic-data boundary passed: test records, ids, paths, candidates, and loader values are fictional/in-process inputs rather than copied operational records
+- [x] claim boundary passed: README / Validation / Limitations / Sharing Guide distinguish synthetic composition evidence from real connector, production, autonomous-agent, persistence, or authority claims
+- [x] implementation merge commit metadata uses GitHub noreply / verified GitHub merge metadata
+- [x] no history rewrite was required; the new reachable commits contain only reviewed sanitized public content
+- [x] publication status remains **PUBLIC_V0_1_READY**
+
+Synchronization state for the lifecycle integration evidence: **MERGED_AND_POST_MERGE_VERIFIED**.
+
+This bookkeeping overlay grants no future executor, retry, staging-merge, automatic-import, production, permission, secret, or product-execution authority.
