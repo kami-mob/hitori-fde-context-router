@@ -128,6 +128,24 @@ The suite contains **35 tests** for the pure/local Source Read Observation bound
 
 These tests prove only deterministic binding and fail-closed local validation for caller-supplied in-memory values. They do **not** prove that an external source was actually read, that the named source produced the supplied bytes, or that the source is authentic, fresh, authorized, complete, or externally proven.
 
+### Source Read Evidence boundary
+
+```bash
+python tests/test_source_read_evidence.py
+```
+
+The suite contains **17 tests** for the pure/local Source Read Evidence boundary. It covers:
+
+- deriving evidence from a fresh Source Read Observation on every call;
+- immutable evidence containing exactly `source_id` plus the three observation hashes;
+- no raw payload bytes or raw source-version string in the evidence object;
+- no caller-supplied precomputed hash input;
+- fail-closed handling of malformed top-level requests, request subclasses, malformed field types, and non-UTF-8 source identifiers;
+- deterministic repeated derivation for the same valid request;
+- no Source Read Gate interaction or PASS generation.
+
+These tests prove only local derivation and data-minimized carriage of a fresh caller-supplied observation result. They do **not** prove that an external source was actually read, that the named source produced the bytes, or that the source is authentic, fresh, authorized, complete, externally proven, or sufficient for Source Read Gate `PASS`.
+
 ### Context Router preflight composition
 
 ```bash
@@ -219,7 +237,7 @@ python -m compileall reference runtime tests
 
 ### Current CI scope
 
-The GitHub Actions workflow in this repository ([`.github/workflows/reference-tests.yml`](../.github/workflows/reference-tests.yml)) invokes the decision resolver, Source Read Gate, Source Read Observation, Context Router preflight, Context Selection, Selective Recall runtime, Work Gate, Re-sync Gate, Writeback Gate, and synthetic lifecycle-integration suites, followed by `python -m compileall reference runtime tests`, on pull requests and pushes.
+The GitHub Actions workflow in this repository ([`.github/workflows/reference-tests.yml`](../.github/workflows/reference-tests.yml)) invokes the decision resolver, Source Read Gate, Source Read Observation, Source Read Evidence, Context Router preflight, Context Selection, Selective Recall runtime, Work Gate, Re-sync Gate, Writeback Gate, and synthetic lifecycle-integration suites, followed by `python -m compileall reference runtime tests`, on pull requests and pushes.
 
 ## Sanitized validation results
 
