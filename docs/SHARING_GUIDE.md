@@ -76,3 +76,11 @@ Do not describe this repository as proof that:
 ## Commercial boundary
 
 This repository provides **Why / What / Evidence**. Complete workspace installation templates, migration packages, operational playbooks, and non-public operational evidence are intentionally maintained separately.
+
+## Cross-surface lifecycle integration wording
+
+Safe wording for the new public evidence:
+
+> The public reference includes synthetic, in-memory chain-level tests showing that its published step-0-through-step-6 interfaces compose under representative fail-closed and resolved inputs.
+
+Keep the limitation attached when relevant: these tests do not prove real connector I/O, production execution, autonomous orchestration, persistence, or authority. Avoid shortening the claim to “end-to-end production validation” or “the full system is proven.”
