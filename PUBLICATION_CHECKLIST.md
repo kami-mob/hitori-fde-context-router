@@ -409,3 +409,27 @@ This section is the latest public-evidence status overlay for the Source Read Ob
 Synchronization state for the Source Read Observation implementation: **MERGED_AND_POST_MERGE_VERIFIED**.
 
 This bookkeeping overlay grants no future executor, retry, staging-merge, automatic-import, production, permission, secret, or product-execution authority.
+
+
+## 2026-09-18 Source Read Evidence sync review — latest overlay
+
+This section is the latest public-evidence status overlay for the Source Read Evidence boundary.
+
+- [x] source staging PR #22 remains **OPEN / NOT_MERGED** and was not used as a merge path
+- [x] reviewed source base was `7371410b695989e4e269af9dc5d0d15b59ccf3df`; reviewed source head was `5f8337b570ef534f5ce525384a15e2122c1926b7`
+- [x] source PR changed exactly `reference/source_read_evidence.py`, `tests/test_source_read_evidence.py`, and `docs/SOURCE_READ_EVIDENCE.md`
+- [x] imported blobs are byte-identical to the reviewed source: reference `5560f6bd3343728e776d2d8623ecfc62b0e98562`, tests `7f751dc58322bef21d4c5ef5c4ca2194b651e7aa`, document `f5723d172f83733e69bd02b1c6bc8d2e9e30a09f`
+- [x] public implementation PR #20 changed exactly nine reviewed paths: the three imported files plus `.github/workflows/reference-tests.yml`, `README.md`, `docs/ARCHITECTURE.md`, `docs/LIMITATIONS.md`, `docs/VALIDATION.md`, and `docs/SHARING_GUIDE.md`
+- [x] public candidate head `9b6a156cb84ec76f39c7e5be3cb19456f774919d` passed Reference Tests run `35322636763`
+- [x] candidate CI directly ran `python tests/test_source_read_evidence.py` in addition to every existing component suite, the lifecycle integration suite, and compileall
+- [x] public implementation PR #20 merged as `11ab901b571462b0ee15758e8ecdb2e73a6002e7`
+- [x] post-merge Reference Tests run `35326083421` succeeded on the exact merge commit
+- [x] the public Source Read Evidence surface derives immutable hash-only evidence from a fresh Source Read Observation result, excludes raw payload bytes and the raw source-version string, and accepts no caller-supplied precomputed hashes
+- [x] `EVIDENCED` is documented as local carriage of a fresh observation result only; it does not prove a real external read or Source Read Gate `PASS`
+- [x] no company/customer/person identifiers, credentials, private operational URLs/paths, production configuration, private repository identifiers, or connector secrets were introduced in the public patch
+- [x] no staging merge, automatic staging-to-canonical import, Routine retry, production change, permission change, secret expansion, or authority inheritance occurred
+- [x] publication status remains **PUBLIC_V0_1_READY**
+
+Synchronization state for the Source Read Evidence implementation: **MERGED_AND_POST_MERGE_VERIFIED**.
+
+This bookkeeping overlay grants no future executor, retry, staging-merge, automatic-import, production, permission, secret, or product-execution authority.
