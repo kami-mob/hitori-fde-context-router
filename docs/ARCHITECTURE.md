@@ -76,6 +76,12 @@ contract.
 
 This surface does **not** perform the external read, choose or authenticate a connector, verify that the named source produced the supplied bytes, check freshness or permissions, establish completeness, or create source authenticity/provenance. An `OBSERVED` result means only that the supplied values passed the local contract and were deterministically bound. See [`SOURCE_READ_OBSERVATION.md`](SOURCE_READ_OBSERVATION.md).
 
+### Source Read Evidence support boundary
+
+[`reference/source_read_evidence.py`](../reference/source_read_evidence.py) is a separate pure/local support surface layered on Source Read Observation. It accepts one caller-supplied `ObservationRequest`, invokes the existing `observe()` function freshly on every call, and only when that result is `OBSERVED` constructs a frozen evidence record containing `source_id` plus the three observation hashes.
+
+The record deliberately excludes raw payload bytes and the raw source-version string. It does not accept caller-supplied precomputed hashes, perform external I/O, authenticate or authorize a source, establish freshness or completeness, or evaluate the Source Read Gate. An `EVIDENCED` result is therefore only immutable hash-only carriage of a local observation result; it is not proof that a real read occurred and is not a Source Read Gate `PASS`. See [`SOURCE_READ_EVIDENCE.md`](SOURCE_READ_EVIDENCE.md).
+
 ## 1. Resolution Kernel
 
 Resolve the smallest relevant decision scope before broad context retrieval:
