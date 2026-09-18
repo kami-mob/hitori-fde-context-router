@@ -79,7 +79,7 @@ The public repository does not include workspace-specific source names, paths, p
 
 ## Public reproducible reference checks
 
-The public repository contains seven small dependency-free Python reference surfaces.
+The public repository contains eight small dependency-free Python reference surfaces.
 
 ### Decision resolver
 
@@ -177,6 +177,22 @@ The suite contains **9 top-level unittest methods**, including a per-signal subt
 
 These tests exercise only a pure/local classifier over caller-supplied material-boundary metadata. They do not prove that the surrounding system detected a real boundary correctly, fetched canonical state, performed a re-sync, or wrote anything back. `RESYNC_REQUIRED` / `NOT_REQUIRED` are classification outcomes only.
 
+### Writeback Gate authority boundary
+
+```bash
+python tests/test_writeback_gate.py
+```
+
+The suite contains **15 tests**. It covers the step 6 boundary described in [`WRITEBACK_GATE.md`](WRITEBACK_GATE.md), including:
+
+- important `USER_CONFIRMED` input at `ACTIVE` / `LOCKED` can become a local `WRITEBACK_CANDIDATE`;
+- important `AI_PROPOSAL` input can become a candidate only at `PROPOSED`;
+- `AI_PROPOSAL` requesting `ACTIVE` / `LOCKED` fails closed as `REVIEW_REQUIRED`, regardless of importance;
+- well-formed non-important input returns `NOT_REQUIRED`;
+- `None`, `dict`, unknown origin/status values, and non-boolean importance fail closed as `REVIEW_REQUIRED / malformed_input` without raising.
+
+These tests prove only the local classification contract. They do not prove that a real user confirmation occurred, that importance was classified correctly, that any record was persisted, or that an authoritative status was granted. `WRITEBACK_CANDIDATE` is not write permission.
+
 A syntax/bytecode check is also supported:
 
 ```bash
@@ -185,7 +201,7 @@ python -m compileall reference runtime tests
 
 ### Current CI scope
 
-The GitHub Actions workflow in this repository ([`.github/workflows/reference-tests.yml`](../.github/workflows/reference-tests.yml)) invokes the decision resolver, Source Read Gate, Context Router preflight, Context Selection, Selective Recall runtime, Work Gate, and Re-sync Gate suites, followed by `python -m compileall reference runtime tests`, on pull requests and pushes.
+The GitHub Actions workflow in this repository ([`.github/workflows/reference-tests.yml`](../.github/workflows/reference-tests.yml)) invokes the decision resolver, Source Read Gate, Context Router preflight, Context Selection, Selective Recall runtime, Work Gate, Re-sync Gate, and Writeback Gate suites, followed by `python -m compileall reference runtime tests`, on pull requests and pushes.
 
 ## Sanitized validation results
 
@@ -247,4 +263,4 @@ The public reproducible tests and the larger private/integration aggregate evide
 
 The strongest claim supported by the evidence is:
 
-> A resolution-first, selective-recall architecture can be implemented and regression-tested so that old decisions, ambiguous provenance, stale state, unrelated context, conditional safety rules, explicit user-selected source requirements, bounded selected-context loading, and explicit material-boundary re-sync classification are handled instead of being left entirely to implicit model judgment.
+> A resolution-first, selective-recall architecture can be implemented and regression-tested so that old decisions, ambiguous provenance, stale state, unrelated context, conditional safety rules, explicit user-selected source requirements, bounded selected-context loading, explicit material-boundary re-sync classification, and a bounded writeback-candidate authority check are handled instead of being left entirely to implicit model judgment.
