@@ -326,3 +326,36 @@ Work Gate post-merge CI: **Reference Tests — SUCCESS** (run `35221004699`)
 Re-sync Gate post-merge CI: **Reference Tests — SUCCESS** (run `35277687786`)
 
 Current public runtime/content main before this checklist-only bookkeeping merge is `5a30bfff2aed5ca2d59262fea252aac72403860d`, tree `cc96dfeed0ce5aa77b15cdacedd0ee69a48d18ca`.
+
+
+## 2026-09-18 Writeback Gate authority-boundary sync review — latest overlay
+
+This section is the latest public-evidence status overlay and supersedes older surface-count and CI-scope sentences above where they conflict.
+
+The bounded Writeback Gate reference and its public evidence were synchronized through public canonical PR #14 after independent staging review.
+
+- [x] the reviewed Writeback Gate implementation, focused test suite, and contract document were imported byte-for-byte from staging PR #15 rather than merging the staging PR
+- [x] imported blobs are `reference/writeback_gate.py` = `ce3a8220830a097ddcc377844bc8ffde593a4c8e`, `tests/test_writeback_gate.py` = `a43c1cc9078d68a983563bb4be26a714720dedb4`, and `docs/WRITEBACK_GATE.md` = `3e106b5d5030abb8493871ed6aecd1bfe3a4ed9f`
+- [x] public PR #14 changed exactly nine reviewed paths: the three imported Writeback Gate files plus `.github/workflows/reference-tests.yml`, `README.md`, `docs/ARCHITECTURE.md`, `docs/LIMITATIONS.md`, `docs/VALIDATION.md`, and `docs/SHARING_GUIDE.md`
+- [x] malformed request objects, invalid enum values, and non-boolean `important` fail closed as `REVIEW_REQUIRED / malformed_input`
+- [x] `AI_PROPOSAL` may produce a candidate only at `PROPOSED`; `ACTIVE` / `LOCKED` requests fail closed as `REVIEW_REQUIRED / ai_proposal_authoritative_status`
+- [x] `WRITEBACK_CANDIDATE` is documented as non-authoritative and performs no persistence, external I/O, mutation, or authority creation
+- [x] public PR #14 head `d660d203b4ca7d8b65adbfee565387f481e56e49` passed Reference Tests run `35298366580`, directly executing resolver, Source Read Gate, preflight, Context Selection, Selective Recall, Work Gate, Re-sync Gate, Writeback Gate, and `compileall reference runtime tests`
+- [x] public PR #14 merged as `4ba23912bdc99ec93c9c4c837a4a934b69416db3`, tree `bd617062dcf0a7d6a91c5a4f9222e5286bddffb9`
+- [x] the merge tree is exactly identical to the tested PR-head tree `bd617062dcf0a7d6a91c5a4f9222e5286bddffb9`
+- [x] merge commit metadata uses GitHub noreply addresses and the merge commit is GitHub-verified
+- [x] staging PR #15 remains open and unmerged; no staging merge, Routine retry, production change, permission change, or secret expansion was performed
+
+Synchronization state for the Writeback Gate runtime/content: **MERGED_AND_EXACT_TREE_VERIFIED**.
+
+The available GitHub connector exposes PR-triggered workflow runs but does not expose the push-triggered run for the merge commit directly. Therefore no post-merge run ID is invented here. Exact-tree identity ties the successful PR CI to the merged implementation tree, and this checklist bookkeeping PR must pass the full public CI again before merge.
+
+### Latest public status
+
+**PUBLIC_V0_1_READY**
+
+Policy audit: **PASS**  
+Reachable-history audit baseline: **PASS**  
+Writeback Gate tested candidate CI: **Reference Tests — SUCCESS** (run `35298366580`)
+
+Current public runtime/content main before this checklist-only bookkeeping merge is `4ba23912bdc99ec93c9c4c837a4a934b69416db3`, tree `bd617062dcf0a7d6a91c5a4f9222e5286bddffb9`.
