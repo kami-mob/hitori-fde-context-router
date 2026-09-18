@@ -22,7 +22,7 @@ Explicit resolution, source-read gates, and fail-closed states reduce some class
 
 ## The public reference code is deliberately bounded
 
-This repository now contains seven dependency-free Python reference surfaces:
+This repository now contains eight dependency-free Python reference surfaces:
 
 - `reference/minimal_resolver.py` demonstrates the **decision-resolution contract**.
 - `reference/source_read_gate.py` demonstrates **pure/local Source Read Gate outcome logic** from caller-supplied request metadata and `read_log`.
@@ -31,8 +31,9 @@ This repository now contains seven dependency-free Python reference surfaces:
 - `runtime/selective_recall.py` demonstrates the **step 3 runtime boundary** — validating a `SELECTED` plan and invoking only a caller-supplied loader for IDs already present in that plan. See [`SELECTIVE_RECALL_RUNTIME.md`](SELECTIVE_RECALL_RUNTIME.md).
 - `reference/work_gate.py` demonstrates the **step 4 safety-independence boundary** — validating a caller-supplied request and classifying the upstream decision state together with explicit production/permission triggers. See [`WORK_GATE.md`](WORK_GATE.md).
 - `reference/resync_gate.py` demonstrates the **step 5 material-boundary classifier** — validating caller-supplied re-sync signals and deterministically returning `RESYNC_REQUIRED` / `NOT_REQUIRED`. See [`RESYNC_GATE.md`](RESYNC_GATE.md).
+- `reference/writeback_gate.py` demonstrates the **step 6 writeback-candidate classifier** — validating caller-supplied origin/status/importance while blocking AI-proposed `ACTIVE` / `LOCKED` status. See [`WRITEBACK_GATE.md`](WRITEBACK_GATE.md).
 
-The resolver, Source Read Gate, preflight, Context Selection, Work Gate, and Re-sync Gate surfaces do **not**:
+The resolver, Source Read Gate, preflight, Context Selection, Work Gate, Re-sync Gate, and Writeback Gate surfaces do **not**:
 
 - connect to external repositories or document stores
 - fetch a user-designated document
@@ -43,6 +44,7 @@ The resolver, Source Read Gate, preflight, Context Selection, Work Gate, and Re-
 - discover production/permission safety conditions from the environment on their own
 - detect every material re-sync boundary from the conversation or environment on their own
 - fetch canonical current state or perform writeback on their own
+- promote an AI proposal to `ACTIVE` / `LOCKED`, persist a candidate, or create authoritative write permission
 
 `source_read_gate.py` can model continuation, source availability, AND/OR requirements, and no-external-read constraints when those facts are supplied by the caller. It does not discover or prove those facts itself.
 
@@ -74,7 +76,9 @@ may be propagated in the returned failure mapping.
 
 `reference/resync_gate.py` is also a local classification boundary. It trusts the caller to supply nine material-boundary booleans. It can fail closed on malformed request shape or field types and can deterministically report every supplied active signal, but it cannot prove that a real current/latest, continuation, implementation, publication, production, permission, price/spec/version, or explicit-source-continuation boundary was detected correctly. Its `RESYNC_REQUIRED` result does not perform or authorize retrieval or writeback, and `NOT_REQUIRED` does not prove that the caller omitted no real boundary.
 
-The Explicit Source Read Gate described in [`SOURCE_READ_GATE.md`](SOURCE_READ_GATE.md) is therefore both a public behavioral contract and a small reproducible decision model, but it is not a complete retrieval or connector implementation. The Selective Recall runtime similarly demonstrates a bounded execution boundary without turning this repository into a complete production retrieval stack. The Work Gate demonstrates safety-independent classification without becoming a production authorization system. The Re-sync Gate demonstrates material-boundary classification without becoming a canonical-state retrieval or writeback engine.
+`reference/writeback_gate.py` is likewise only a classifier. It trusts the caller to label origin, requested status, and importance correctly. It can block the explicit `AI_PROPOSAL -> ACTIVE/LOCKED` path and fail closed on malformed input, but it cannot independently prove that a user really confirmed a decision, determine whether content is important, persist a record, validate a storage destination, or grant authority to write. `WRITEBACK_CANDIDATE` is therefore not evidence that a write occurred or that an authoritative status is valid.
+
+The Explicit Source Read Gate described in [`SOURCE_READ_GATE.md`](SOURCE_READ_GATE.md) is therefore both a public behavioral contract and a small reproducible decision model, but it is not a complete retrieval or connector implementation. The Selective Recall runtime similarly demonstrates a bounded execution boundary without turning this repository into a complete production retrieval stack. The Work Gate demonstrates safety-independent classification without becoming a production authorization system. The Re-sync Gate demonstrates material-boundary classification without becoming a canonical-state retrieval or writeback engine. The Writeback Gate demonstrates an authority-sensitive candidate boundary without becoming a persistence or approval system.
 
 ## Canonical sources still matter
 
@@ -112,6 +116,7 @@ Reported validation counts demonstrate regression coverage for the tested implem
 - proof that a Work Gate `PROCEED` result is execution authority
 - proof that all material re-sync boundaries will always be detected correctly upstream
 - proof that a Re-sync Gate result itself performs, authorizes, or proves a canonical re-sync
+- proof that a Writeback Gate `WRITEBACK_CANDIDATE` result proves user confirmation, performs persistence, or grants authoritative status
 
 ## Public examples are synthetic
 
