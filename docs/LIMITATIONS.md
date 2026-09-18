@@ -127,3 +127,9 @@ This improves safety and portability, but means the public examples are smaller 
 ## Licensing
 
 No open-source license is declared in this version. Repository visibility and software reuse rights are separate decisions. Licensing should be selected explicitly before third-party reuse is encouraged.
+
+## Cross-surface lifecycle integration non-claim
+
+The synthetic lifecycle integration suite composes the existing public interfaces in two representative in-memory chains. It is evidence about deterministic composition of caller-supplied inputs only. It does not add an orchestrator or production runtime, does not perform external reads, does not verify connector authentication or provenance, does not detect real production/permission/material-boundary conditions, and does not make `PROCEED`, `RESYNC_REQUIRED`, or `WRITEBACK_CANDIDATE` authoritative actions.
+
+An accurate claim is: the published step-0-through-step-6 interfaces can be regression-tested together so that a supplied `VERIFY` state remains fail-closed through work classification and a supplied `RESOLVED` path preserves the documented selection, bounded loading, re-sync classification, and writeback authority boundaries. Do not describe this as end-to-end proof of a real external system or autonomous agent workflow.

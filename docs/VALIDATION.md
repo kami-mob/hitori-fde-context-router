@@ -264,3 +264,15 @@ The public reproducible tests and the larger private/integration aggregate evide
 The strongest claim supported by the evidence is:
 
 > A resolution-first, selective-recall architecture can be implemented and regression-tested so that old decisions, ambiguous provenance, stale state, unrelated context, conditional safety rules, explicit user-selected source requirements, bounded selected-context loading, explicit material-boundary re-sync classification, and a bounded writeback-candidate authority check are handled instead of being left entirely to implicit model judgment.
+
+## Cross-surface lifecycle integration evidence
+
+The public reference also includes a synthetic, fully in-memory composition suite:
+
+```bash
+python tests/test_reference_lifecycle_integration.py
+```
+
+It contains two chain-level tests over the existing published interfaces. One carries a Source Read Gate `VERIFY` result through Context Selection and plan-bounded Selective Recall to a fail-closed Work Gate `REVIEW_REQUIRED`. The other carries a synthetic `RESOLVED` decision through Context Selection, Selective Recall, Work Gate `PROCEED`, a caller-supplied material signal producing `RESYNC_REQUIRED`, and the Writeback Gate authority boundary where AI-proposed `ACTIVE` / `LOCKED` requests fail closed and important `USER_CONFIRMED` input remains only a `WRITEBACK_CANDIDATE`.
+
+These tests prove that the already-published pure/local interfaces can compose under those supplied synthetic inputs. They do **not** prove real connector I/O, source provenance, environment detection, production execution, autonomous orchestration, persistence, or permission to act. See [`REFERENCE_LIFECYCLE_INTEGRATION.md`](REFERENCE_LIFECYCLE_INTEGRATION.md) and [`LIMITATIONS.md`](LIMITATIONS.md).
