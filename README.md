@@ -40,7 +40,9 @@ Writeback Gate (writeback-candidate classification)
 
 さらに [`reference/source_read_observation.py`](reference/source_read_observation.py) は、caller-supplied な source identity / version / raw payload bytes を決定論的なSHA-256へbindするpure/local補助境界を示します。これは「渡された値のbinding」であり、実際の外部read・source authenticity・freshness・authorization・completeness・connector provenanceを証明するものではありません。
 
-このpublic referenceでは、decision resolution、Explicit Source Read Gate、**caller-supplied source identity / version / raw payload bytes を決定論的にbindするpure/local Source Read Observation**、steps 0–1のpreflight、HOT/WARM/COLDのselection planning、**選択済みplanだけをcaller-supplied loaderへ渡す最小Selective Recall runtime boundary**、**caller-supplied decision stateとProduction / Permission triggerを独立に評価するpure/local Work Gate**に加えて、**current/latest・継続・実装・公開などのmaterial-boundary signalをcaller-supplied booleanとして判定するpure/local Re-sync Gate**に加えて、**caller-suppliedなorigin・requested status・importanceからwriteback候補を分類し、AI提案の`ACTIVE` / `LOCKED`化をfail-closedするpure/local Writeback Gate**を公開しています。Work Gateの`PROCEED`、Re-sync Gateの`RESYNC_REQUIRED` / `NOT_REQUIRED`、Writeback Gateの`WRITEBACK_CANDIDATE`はいずれも分類結果であり、それ自体が実行・取得・永続化・権限昇格を許可するものではありません。
+[`reference/source_read_evidence.py`](reference/source_read_evidence.py) は、そのfreshなObservation結果から `source_id` と3つのhashだけをimmutable evidenceとして取り出すpure/local補助境界です。raw payloadやsource version文字列を再露出せずに構造化して運べますが、これも実readの証明やSource Read Gateの`PASS`ではありません。
+
+このpublic referenceでは、decision resolution、Explicit Source Read Gate、**caller-supplied source identity / version / raw payload bytes を決定論的にbindするpure/local Source Read Observation**、**そのfreshなObservation結果からhash-only immutable evidenceを構成するpure/local Source Read Evidence**、steps 0–1のpreflight、HOT/WARM/COLDのselection planning、**選択済みplanだけをcaller-supplied loaderへ渡す最小Selective Recall runtime boundary**、**caller-supplied decision stateとProduction / Permission triggerを独立に評価するpure/local Work Gate**に加えて、**current/latest・継続・実装・公開などのmaterial-boundary signalをcaller-supplied booleanとして判定するpure/local Re-sync Gate**に加えて、**caller-suppliedなorigin・requested status・importanceからwriteback候補を分類し、AI提案の`ACTIVE` / `LOCKED`化をfail-closedするpure/local Writeback Gate**を公開しています。Work Gateの`PROCEED`、Re-sync Gateの`RESYNC_REQUIRED` / `NOT_REQUIRED`、Writeback Gateの`WRITEBACK_CANDIDATE`はいずれも分類結果であり、それ自体が実行・取得・永続化・権限昇格を許可するものではありません。
 
 日本語の補足は [`docs/FAQ_JA.md`](docs/FAQ_JA.md) を参照してください。
 
@@ -49,7 +51,7 @@ Writeback Gate (writeback-candidate classification)
 ## If you have 60 seconds
 
 1. Read the architecture below.
-2. See [`docs/SOURCE_READ_GATE.md`](docs/SOURCE_READ_GATE.md) for the explicit-source grounding contract, and [`docs/SOURCE_READ_OBSERVATION.md`](docs/SOURCE_READ_OBSERVATION.md) for the deterministic caller-supplied value-binding boundary.
+2. See [`docs/SOURCE_READ_GATE.md`](docs/SOURCE_READ_GATE.md) for the explicit-source grounding contract, [`docs/SOURCE_READ_OBSERVATION.md`](docs/SOURCE_READ_OBSERVATION.md) for deterministic caller-supplied value binding, and [`docs/SOURCE_READ_EVIDENCE.md`](docs/SOURCE_READ_EVIDENCE.md) for the immutable hash-only evidence boundary.
 3. See [`docs/DECISION_RESOLUTION_SPEC.md`](docs/DECISION_RESOLUTION_SPEC.md) for the resolution contract.
 4. See [`docs/CONTEXT_SELECTION.md`](docs/CONTEXT_SELECTION.md) for the step 2 Context Router planning reference, [`docs/SELECTIVE_RECALL_RUNTIME.md`](docs/SELECTIVE_RECALL_RUNTIME.md) for the bounded step 3 loading boundary, [`docs/WORK_GATE.md`](docs/WORK_GATE.md) for the step 4 safety-independence boundary, [`docs/RESYNC_GATE.md`](docs/RESYNC_GATE.md) for the step 5 material-boundary classifier, and [`docs/WRITEBACK_GATE.md`](docs/WRITEBACK_GATE.md) for the step 6 writeback-candidate classifier. See [`docs/REFERENCE_LIFECYCLE_INTEGRATION.md`](docs/REFERENCE_LIFECYCLE_INTEGRATION.md) for synthetic cross-surface composition evidence.
 5. Run the reference suites, including `python tests/test_reference_lifecycle_integration.py` for the two chain-level composition checks.
@@ -155,6 +157,7 @@ Operational templates, workspace-specific installation materials, migration pack
 - `docs/ARCHITECTURE.md` — architecture and routing model
 - `docs/SOURCE_READ_GATE.md` — explicit-source grounding contract and pure/local gate model
 - `docs/SOURCE_READ_OBSERVATION.md` — pure/local binding of caller-supplied source identity, version, and raw payload bytes
+- `docs/SOURCE_READ_EVIDENCE.md` — pure/local immutable evidence derived from a fresh Source Read Observation result
 - `docs/DECISION_RESOLUTION_SPEC.md` — current-decision resolution rules
 - `docs/CONTEXT_ROUTER_PREFLIGHT.md` — pure/local composition of the gate and the resolver (steps 0–1)
 - `docs/CONTEXT_SELECTION.md` — pure/local Context Router planning reference (step 2)
@@ -170,6 +173,7 @@ Operational templates, workspace-specific installation materials, migration pack
 - `reference/minimal_resolver.py` — dependency-free minimal decision resolver
 - `reference/source_read_gate.py` — dependency-free Source Read Gate outcome model; no external I/O
 - `reference/source_read_observation.py` — dependency-free deterministic source/value binding over caller-supplied in-memory values; no external I/O
+- `reference/source_read_evidence.py` — dependency-free immutable hash-only evidence derived from a fresh Source Read Observation result; no gate interaction
 - `reference/context_router_preflight.py` — pure/local composition sequencing `source_read_gate.evaluate` then `minimal_resolver.resolve_current`; no new I/O or behavior
 - `reference/context_selection.py` — dependency-free Context Router step 2 planner over caller-scored, caller-tiered candidates
 - `runtime/selective_recall.py` — dependency-free step 3 boundary that executes only a validated selection plan through a caller-supplied loader
@@ -180,6 +184,7 @@ Operational templates, workspace-specific installation materials, migration pack
 - `tests/test_resolver.py` — deterministic decision-resolution reference cases
 - `tests/test_source_read_gate.py` — Source Read Gate suite including resolver regression guards
 - `tests/test_source_read_observation.py` — Source Read Observation exact-type, malformed-Unicode, and deterministic-hash tests
+- `tests/test_source_read_evidence.py` — Source Read Evidence derivation, immutability, no-raw-data, and fail-closed tests
 - `tests/test_context_router_preflight.py` — composition boundary tests for the gate-then-resolver sequencing
 - `tests/test_context_selection.py` — Context Selection planner tests (HOT/WARM/COLD selection rules and carve-outs)
 - `tests/test_selective_recall_runtime.py` — Selective Recall plan-validation / bounded-loading tests
@@ -214,6 +219,7 @@ The code in this repository is intentionally small.
 - `reference/minimal_resolver.py` demonstrates the decision-resolution contract.
 - `reference/source_read_gate.py` demonstrates pure/local Source Read Gate outcome logic from caller-supplied request metadata and `read_log`.
 - `reference/source_read_observation.py` demonstrates deterministic binding of caller-supplied source identity, source version, and exact raw payload bytes into SHA-256 values. It performs no external read and makes no authenticity, freshness, authorization, completeness, or provenance claim. See [`docs/SOURCE_READ_OBSERVATION.md`](docs/SOURCE_READ_OBSERVATION.md).
+- `reference/source_read_evidence.py` demonstrates carrying a fresh `OBSERVED` result forward as a frozen record containing only `source_id` plus the three derived hashes. It does not perform or prove a real read and does not satisfy the Source Read Gate. See [`docs/SOURCE_READ_EVIDENCE.md`](docs/SOURCE_READ_EVIDENCE.md).
 - `reference/context_router_preflight.py` demonstrates the conditional sequencing from [`ARCHITECTURE.md`](docs/ARCHITECTURE.md): it composes the two functions above, calling the resolver only when the gate reaches `PASS` or `NOT_APPLICABLE`, and otherwise returning the gate's own fail-closed outcome unchanged. See [`docs/CONTEXT_ROUTER_PREFLIGHT.md`](docs/CONTEXT_ROUTER_PREFLIGHT.md).
 - `reference/context_selection.py` demonstrates the Context Router's step 2 planning logic: given a resolution result and caller-supplied, already-scored, already-tiered candidates, it decides which HOT / WARM / COLD candidates are selected. See [`docs/CONTEXT_SELECTION.md`](docs/CONTEXT_SELECTION.md).
 - `runtime/selective_recall.py` demonstrates the step 3 execution boundary: it validates the selection result, then invokes the caller-supplied loader only for IDs already present in the plan. See [`docs/SELECTIVE_RECALL_RUNTIME.md`](docs/SELECTIVE_RECALL_RUNTIME.md).
@@ -221,12 +227,13 @@ The code in this repository is intentionally small.
 - `reference/resync_gate.py` demonstrates the step 5 material-boundary boundary: it validates the request shape and returns `RESYNC_REQUIRED` when any supplied re-sync signal is active, without retrieving or mutating external state. See [`docs/RESYNC_GATE.md`](docs/RESYNC_GATE.md).
 - `reference/writeback_gate.py` demonstrates the step 6 writeback boundary: it validates caller-supplied origin/status/importance, rejects AI-proposed `ACTIVE` / `LOCKED` status, and returns only a non-authoritative local candidate classification. See [`docs/WRITEBACK_GATE.md`](docs/WRITEBACK_GATE.md).
 
-This repository now contains nine dependency-free Python reference surfaces. The resolver, Source Read Gate, Source Read Observation, preflight, Context Selection, Work Gate, Re-sync Gate, and Writeback Gate do not perform external connector I/O. The Selective Recall runtime contains no connector discovery or connector-specific code; if its caller-supplied loader performs I/O, that I/O is the caller's responsibility. In particular, `source_read_gate.py` does **not** prove that a repository or document was really fetched; the caller supplies the read evidence that the model evaluates. `source_read_observation.py` can bind caller-supplied identity/version/payload values deterministically, but it likewise cannot prove that those values came from a real read or that the named source is authentic, fresh, authorized, complete, or externally proven. The runtime also does not independently prove the provenance, safety, or correctness of a loader implementation. The Work Gate likewise does not detect production/permission conditions on its own and a `PROCEED` result is not permission to execute work. The Re-sync Gate does not detect material boundaries on its own, fetch canonical state, or perform writeback; `RESYNC_REQUIRED` / `NOT_REQUIRED` are classification outcomes only. The Writeback Gate does not persist anything, infer confirmation on its own, or grant authoritative status; `WRITEBACK_CANDIDATE` is a local classification only.
+This repository now contains ten dependency-free Python reference surfaces. The resolver, Source Read Gate, Source Read Observation, Source Read Evidence, preflight, Context Selection, Work Gate, Re-sync Gate, and Writeback Gate do not perform external connector I/O. The Selective Recall runtime contains no connector discovery or connector-specific code; if its caller-supplied loader performs I/O, that I/O is the caller's responsibility. In particular, `source_read_gate.py` does **not** prove that a repository or document was really fetched; the caller supplies the read evidence that the model evaluates. `source_read_observation.py` can bind caller-supplied identity/version/payload values deterministically, but it likewise cannot prove that those values came from a real read or that the named source is authentic, fresh, authorized, complete, or externally proven. `source_read_evidence.py` only freezes a fresh observation result into a hash-only record and cannot turn that local value binding into proof of a real read or a Source Read Gate `PASS`. The runtime also does not independently prove the provenance, safety, or correctness of a loader implementation. The Work Gate likewise does not detect production/permission conditions on its own and a `PROCEED` result is not permission to execute work. The Re-sync Gate does not detect material boundaries on its own, fetch canonical state, or perform writeback; `RESYNC_REQUIRED` / `NOT_REQUIRED` are classification outcomes only. The Writeback Gate does not persist anything, infer confirmation on its own, or grant authoritative status; `WRITEBACK_CANDIDATE` is a local classification only.
 
 Run locally:
 
 ```bash
 python tests/test_source_read_observation.py
+python tests/test_source_read_evidence.py
 python tests/test_reference_lifecycle_integration.py
 python tests/test_writeback_gate.py
 python tests/test_resync_gate.py
@@ -239,9 +246,9 @@ python -m unittest discover -s tests -p test_source_read_gate.py
 python -m compileall reference runtime tests
 ```
 
-The Source Read Gate unittest suite contains 32 tests in this reference, including regression guards for the existing decision resolver. The Source Read Observation suite contains 35 tests covering exact request/field types, malformed top-level objects, UTF-8 encodability, deterministic hashes, and valid non-ASCII input. The Context Selection suite contains 18 tests, the Context Router Preflight suite contains 7 tests, the Selective Recall runtime suite contains 12 tests, the Work Gate suite contains 18 tests, the Re-sync Gate suite contains 9 top-level unittest methods (including per-signal subtests across all nine material-boundary fields), and the Writeback Gate suite contains 15 tests.
+The Source Read Gate unittest suite contains 32 tests in this reference, including regression guards for the existing decision resolver. The Source Read Observation suite contains 35 tests covering exact request/field types, malformed top-level objects, UTF-8 encodability, deterministic hashes, and valid non-ASCII input. The Source Read Evidence suite contains 17 tests covering fresh derivation, immutability, no raw payload/version exposure, no caller-supplied hashes, and fail-closed malformed inputs. The Context Selection suite contains 18 tests, the Context Router Preflight suite contains 7 tests, the Selective Recall runtime suite contains 12 tests, the Work Gate suite contains 18 tests, the Re-sync Gate suite contains 9 top-level unittest methods (including per-signal subtests across all nine material-boundary fields), and the Writeback Gate suite contains 15 tests.
 
-The GitHub Actions workflow in this repository ([`.github/workflows/reference-tests.yml`](.github/workflows/reference-tests.yml)) runs the resolver, Source Read Gate, Source Read Observation, preflight, Context Selection, Selective Recall, Work Gate, Re-sync Gate, Writeback Gate, and the synthetic lifecycle integration suite plus `compileall` on pull requests and pushes.
+The GitHub Actions workflow in this repository ([`.github/workflows/reference-tests.yml`](.github/workflows/reference-tests.yml)) runs the resolver, Source Read Gate, Source Read Observation, Source Read Evidence, preflight, Context Selection, Selective Recall, Work Gate, Re-sync Gate, Writeback Gate, and the synthetic lifecycle integration suite plus `compileall` on pull requests and pushes.
 
 ## Status
 
