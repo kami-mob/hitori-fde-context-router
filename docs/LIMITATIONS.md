@@ -22,11 +22,12 @@ Explicit resolution, source-read gates, and fail-closed states reduce some class
 
 ## The public reference code is deliberately bounded
 
-This repository now contains nine dependency-free Python reference surfaces:
+This repository now contains ten dependency-free Python reference surfaces:
 
 - `reference/minimal_resolver.py` demonstrates the **decision-resolution contract**.
 - `reference/source_read_gate.py` demonstrates **pure/local Source Read Gate outcome logic** from caller-supplied request metadata and `read_log`.
 - `reference/source_read_observation.py` demonstrates **pure/local deterministic value binding** over caller-supplied source identity, version, and exact raw payload bytes. See [`SOURCE_READ_OBSERVATION.md`](SOURCE_READ_OBSERVATION.md).
+- `reference/source_read_evidence.py` demonstrates **pure/local immutable hash-only carriage** derived from a fresh Source Read Observation result. See [`SOURCE_READ_EVIDENCE.md`](SOURCE_READ_EVIDENCE.md).
 - `reference/context_router_preflight.py` demonstrates the **pure/local composition** of the two functions above, sequencing them in the conditional order [`ARCHITECTURE.md`](ARCHITECTURE.md) specifies for steps 0 and 1. See [`CONTEXT_ROUTER_PREFLIGHT.md`](CONTEXT_ROUTER_PREFLIGHT.md).
 - `reference/context_selection.py` demonstrates **step 2 planning** — deciding which already-scored, already-tiered candidates belong in the HOT/WARM/COLD read plan. See [`CONTEXT_SELECTION.md`](CONTEXT_SELECTION.md).
 - `runtime/selective_recall.py` demonstrates the **step 3 runtime boundary** — validating a `SELECTED` plan and invoking only a caller-supplied loader for IDs already present in that plan. See [`SELECTIVE_RECALL_RUNTIME.md`](SELECTIVE_RECALL_RUNTIME.md).
@@ -34,7 +35,7 @@ This repository now contains nine dependency-free Python reference surfaces:
 - `reference/resync_gate.py` demonstrates the **step 5 material-boundary classifier** — validating caller-supplied re-sync signals and deterministically returning `RESYNC_REQUIRED` / `NOT_REQUIRED`. See [`RESYNC_GATE.md`](RESYNC_GATE.md).
 - `reference/writeback_gate.py` demonstrates the **step 6 writeback-candidate classifier** — validating caller-supplied origin/status/importance while blocking AI-proposed `ACTIVE` / `LOCKED` status. See [`WRITEBACK_GATE.md`](WRITEBACK_GATE.md).
 
-The resolver, Source Read Gate, Source Read Observation, preflight, Context Selection, Work Gate, Re-sync Gate, and Writeback Gate surfaces do **not**:
+The resolver, Source Read Gate, Source Read Observation, Source Read Evidence, preflight, Context Selection, Work Gate, Re-sync Gate, and Writeback Gate surfaces do **not**:
 
 - connect to external repositories or document stores
 - fetch a user-designated document
