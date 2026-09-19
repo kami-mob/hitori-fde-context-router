@@ -481,3 +481,28 @@ Publication/synchronization status for this bounded reader and handoff:
 attestation, permission verification, a production release or a general
 external-source guarantee. The live public-only GET is an intentionally
 bounded exception to the deterministic offline test suite.
+
+## 2026-09-19 Same-source pinned public decision reference review
+
+This is a new, bounded Why/What/Evidence-only publication candidate:
+one explicitly chosen immutable public GitHub JSON file is fetched once,
+independently checked against a previously selected expected blob SHA,
+passed as the SAME receipt through the local evidence/Gate model, and
+parsed as the ONLY input to a non-authoritative local decision classifier.
+
+- [x] The applicable Publication Policy, Security Policy, Public Evidence Sync Gate, public Sharing Guide and Limitations were reviewed before committing new code.
+- [x] Public records and tests use synthetic demo decisions, explicitly PUBLIC GitHub reference file, fixed public source path and no API token or secret. No private repository, customer, workplace path, account ID or production configuration was copied.
+- [x] The new code has no private repository authentication, user permission mutation, persistence, auto-retry, scheduler, writeback or production action. The actual public-only transport remains in the previously reviewed fixed-host, path-allowlisted, commit-pinned reader.
+- [x] The independent 12-case no-network source-to-decision regression command is included in the default Reference Tests workflow. The one-GET public smoke is optional, not a routine CI dependency.
+- [x] README, Architecture, Validation, Limitations, Sharing Guide and the new public preflight document distinguish evidence-binding and local decision classification from independent provenance, authenticated private access, branch freshness, operation permission and product readiness.
+- [x] A separate public-repository candidate run `35447805768` performed exactly one token-free public GitHub Contents GET of a reviewed synthetic snapshot, checked the independently recorded blob and resolved the expected decision using those same returned bytes. Its scope is one public file and is not enterprise-source verification.
+- [ ] Verify the final exact public PR head, changed paths, synthetic data, sensitive markers, and current tree/reachable public-branch commit history and noreply commit metadata.
+- [ ] Confirm exact-head public PR CI directly ran 12 same-source tests, 17 acquisition tests, 12 mocked public-reader tests, 20 binding tests, all existing reference tests and compileall; confirm default CI remains no-network.
+- [ ] Record the exact PR-head owner-approved merge decision, review the sanitized squash/merge commit parent and metadata, and verify post-merge public main and CI.
+- [ ] Publish the completed checklist and re-read its final merged state, then write back the private governance current status without treating a local classification as a product decision.
+
+Publication status for this additional same-source local reference:
+**PUBLIC_SYNC_PENDING** until all unchecked gates are verified. An
+immutable public file can support a bounded local evidence-backed
+classification; this does not by itself establish a real business
+decision, authority, production readiness, or access to private data.
