@@ -456,3 +456,28 @@ Publication/synchronization status for the binding runtime/content: **PUBLIC_SYN
 live source was fetched, a connector was authenticated, or a production
 agent was deployed. The publication itself grants no unrelated execution,
 permission, or deployment authority.
+
+## 2026-09-19 Source acquisition and public pinned reader publication — candidate
+
+This separate bounded release contains a caller-selected adapter-fed local
+handoff, a **public-only, fixed-host read-only GitHub file reader** and
+synthetic reproducible validation. It does NOT include private connector
+authentication, workspace credentials, a production/source-permission
+workflow, or a complete deployed agent.
+
+- [x] Publication and Security Policies were read before preparing the public candidate.
+- [x] The new source/test files contain fictional receipt fixtures or an already-public reference file only, with no private repository URL, customer or employee data, token, password, tenant/account ID or workspace-local path.
+- [x] Previous Source Read Gate, Observation, Evidence, Binding and preflight dependency blobs match the separately audited public baseline.
+- [x] A separate public-branch GitHub Actions run [35444084250](https://github.com/kami-mob/hitori-fde-context-router/actions/runs/35444084250) executed a single no-token HTTPS GET for one explicitly pinned public file, checked its Git blob SHA, then passed its already-read receipt through the local gate without a second GET; that one-file evidence is explicitly narrower than private/enterprise connector verification.
+- [x] The standard reference CI retains independent 17-test synthetic acquisition and 12-test mocked-HTTPS reader suites and does not run the network smoke by default.
+- [x] README, Architecture, Validation, Limitations, Sharing Guide and the two new support documents distinguish synthetic local PASS, one public read, independent authorization, provenance, revision freshness and production claims.
+- [ ] Audit the exact final PR-head changed paths and every added line, current tree, reachable new Git commit chain and metadata for publication/privacy boundary.
+- [ ] Verify the exact final PR-head public CI (independent 17/12 tests plus existing suites and compileall) and that public main did not drift from audited base.
+- [ ] Record the exact reviewed PR head, obtain merge and post-merge main/commit/CI readback; finalize checklist-only status in a separate tested commit.
+
+Publication/synchronization status for this reader and handoff:
+**PUBLIC_SYNC_PENDING** until all unchecked gates pass. A local
+`PASS` with `CALLER_SUPPLIED_ADAPTER` is not independent source
+attestation, permission verification, a production release or a general
+external-source guarantee. The live public-only GET is an intentionally
+bounded exception to the deterministic offline test suite.
