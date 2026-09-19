@@ -48,7 +48,7 @@ The default adapter uses the standard-library HTTPS client; its optional
 injected transport exists solely to support deterministic, no-network
 tests. No custom host or bearer-token field is accepted. The default CI suite mocks HTTP responses and cannot prove real network
 access. A separate, single-read public-only HTTPS smoke was executed on the
-isolated candidate branch: GitHub Actions run `35442237163` ran
+public reference candidate branch: GitHub Actions run [`35444084250`](https://github.com/kami-mob/hitori-fde-context-router/actions/runs/35444084250) ran
 `python tests/test_github_public_pinned_live_smoke.py` and passed its one
 real public GitHub Contents GET for an explicitly pinned public reference
 file. The smoke verified the returned file bytes against an independently
