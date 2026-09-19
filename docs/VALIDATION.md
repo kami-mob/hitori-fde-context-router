@@ -79,7 +79,7 @@ The public repository does not include workspace-specific source names, paths, p
 
 ## Public reproducible reference checks
 
-The public repository contains eleven small dependency-free Python reference surfaces.
+The public repository contains thirteen standard-library Python reference surfaces; the pinned public GitHub reader can perform bounded network I/O, while the remaining references have no built-in network client.
 
 ### Decision resolver
 
@@ -167,6 +167,36 @@ It does **not** establish a real external read, provenance, authenticity,
 authorization, freshness, completeness, Source Read Gate `PASS`, or
 production/integration correctness. It is invoked as an independent command
 by the public Reference Tests workflow.
+
+### Bounded Source Read acquisition and public GitHub reader
+
+```bash
+python tests/test_source_read_acquisition_handoff.py
+python tests/test_github_public_pinned_reader.py
+# Optional: makes one public network request; not part of default CI
+python tests/test_github_public_pinned_live_smoke.py
+```
+
+The adapter-fed acquisition handoff suite contains **17** synthetic tests
+for explicit source allowlists, ALL/ANY behavior, no-external-read mode,
+invalid receipts, exceptions, evidence binding before modeled gate evaluation
+and non-disclosing failure results. The pinned public GitHub reader suite
+contains **12** mocked-HTTPS tests covering fixed host, exact commit/path
+binding, no credential header, size limits, base64 decoding, Git blob digest
+checks, malformed responses and integration with the local handoff. Default
+public CI runs these tests **independently**, without network access.
+
+A separate opt-in test of **one** public GitHub Contents HTTPS GET at a fixed
+public commit completed successfully in public GitHub Actions run
+[`35444084250`](https://github.com/kami-mob/hitori-fde-context-router/actions/runs/35444084250). It checked the
+returned file bytes against an independently recorded Git blob SHA and
+passed the already-read receipt through the local handoff, without a
+second HTTP request. This proves the narrowly scoped public read worked
+in that environment at that time; it is not evidence of access to
+private GitHub data, enterprise connectors, caller authorization,
+freshness of changing branches, ongoing network reliability, or a
+deployed agent. The local Gate `PASS` remains explicitly labeled
+`CALLER_SUPPLIED_ADAPTER` and is not independent provenance attestation.
 
 ### Context Router preflight composition
 

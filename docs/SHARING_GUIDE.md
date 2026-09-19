@@ -25,6 +25,8 @@ The sanitized public repository contains:
 - dependency-free pure/local Source Read Observation value-binding model
 - dependency-free pure/local Source Read Evidence hash-only carriage model
 - dependency-free pure/local Source Read Evidence Binding comparison model with 20 direct synthetic tests
+- bounded caller-selected adapter handoff with 17 synthetic tests; the local gate result is not independent evidence of permission or an actual read
+- fixed-host, read-only pinned public GitHub file reference with 12 mocked-HTTPS tests and one separately observed opt-in public-only HTTPS smoke
 - pure/local Context Router preflight composition
 - dependency-free Context Selection planner
 - bounded Selective Recall runtime boundary
@@ -32,7 +34,7 @@ The sanitized public repository contains:
 - dependency-free pure/local Re-sync Gate material-boundary classifier
 - dependency-free pure/local Writeback Gate authority-boundary classifier
 - synthetic fixture data
-- reproducible public suites for resolver, Source Read Gate, Source Read Observation, Source Read Evidence, Source Read Evidence Binding, preflight, Context Selection, Selective Recall, Work Gate, Re-sync Gate, Writeback Gate, and synthetic lifecycle integration
+- reproducible public suites for resolver, Source Read Gate, Source Read Observation, Source Read Evidence, Source Read Evidence Binding, synthetic adapter handoff, mocked public GitHub reader, preflight, Context Selection, Selective Recall, Work Gate, Re-sync Gate, Writeback Gate, and synthetic lifecycle integration
 - GitHub Actions CI for all published public reference suites plus compileall
 - sanitized aggregate validation results from a larger implementation
 - dedicated private/integration source-read regression evidence: 10/10 PASS
@@ -58,6 +60,10 @@ For the public Source Read Evidence code specifically, an accurate narrower clai
 For the public Source Read Evidence Binding code specifically, an accurate narrower claim is:
 
 > A pure/local reference verifies that an exact caller-supplied evidence record matches one fresh internal derivation from a caller-supplied observation request, with fail-closed handling of malformed fields. Its 20 synthetic tests do not prove an actual external read, provenance, authenticity, freshness, source authorization, completeness, or Source Read Gate `PASS`.
+
+For the adapter-fed acquisition and pinned public-reader reference specifically, an accurate narrower claim is:
+
+> A bounded local handoff can pass one explicitly selected source receipt through evidence derivation, binding and the modeled Source Read Gate. A separate token-free, read-only adapter can request a named public GitHub file at an immutable commit. Synthetic tests cover the failure boundaries, and a one-file public HTTPS smoke confirmed one such read. Neither local gate `PASS` nor that smoke proves private source access, caller permissions, independently trusted provenance, current revision freshness, enterprise integration or a production agent.
 
 For the public Work Gate code specifically, an accurate narrower claim is:
 

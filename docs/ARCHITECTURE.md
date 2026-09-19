@@ -99,6 +99,26 @@ a source-read requirement `PASS`. See
 [`SOURCE_READ_EVIDENCE_BINDING.md`](SOURCE_READ_EVIDENCE_BINDING.md) for its
 exact in-memory API and boundary.
 
+### Bounded adapter-fed acquisition and pinned public read
+
+[`reference/source_read_acquisition_handoff.py`](../reference/source_read_acquisition_handoff.py)
+is an optional support composition between an externally selected reader,
+local evidence derivation, evidence binding and the Source Read Gate model.
+It only invokes an explicitly supplied adapter for declared identifiers,
+adds a locally verified receipt to the modeled read log, and exposes a
+`PASS` marked `CALLER_SUPPLIED_ADAPTER`. It cannot authenticate the adapter
+or independently prove that the named source was fetched or authorized.
+
+[`reference/github_public_pinned_reader.py`](../reference/github_public_pinned_reader.py)
+is one narrow read-only HTTP adapter: one file from the public GitHub
+Contents API, with a fixed host, allowed path and explicit immutable commit.
+A separate public-only opt-in smoke exercised one pinned external GET and
+matched the expected Git blob SHA; ordinary CI tests use mocked HTTP.
+Neither result grants private repository access or changes the step-0
+through step-6 ordering or existing permission/production gates. See
+[`SOURCE_READ_ACQUISITION_HANDOFF.md`](SOURCE_READ_ACQUISITION_HANDOFF.md)
+and [`GITHUB_PUBLIC_PINNED_READER.md`](GITHUB_PUBLIC_PINNED_READER.md).
+
 ## 1. Resolution Kernel
 
 Resolve the smallest relevant decision scope before broad context retrieval:
