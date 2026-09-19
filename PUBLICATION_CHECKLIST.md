@@ -447,13 +447,12 @@ not evidence that later supplied evidence still matches a fresh derivation.
 - [x] The three added source/test/documentation files are a standalone, reproducible pure/local model, with no external I/O or authority creation.
 - [x] The public workflow includes a **direct** `python tests/test_source_read_evidence_binding.py` step so older component suites cannot silently substitute for the new tests.
 - [x] README, Architecture, Validation, Limitations and Sharing Guide distinguish local evidence equality from actual external read, source provenance, Source Read Gate `PASS`, production use and permission to act.
-- [ ] Verify exact final public PR head, changed paths, current-tree privacy, sensitive markers and commit metadata.
-- [ ] Verify current public main is still the previously audited clean baseline, and each new reachable public commit introduces only reviewed sanitized files and GitHub noreply metadata.
-- [ ] Verify the exact final PR-head CI runs the independent **20-test** binding suite, existing reference suites and compileall successfully.
+- [x] Verify exact final public PR head, changed paths, current-tree privacy, sensitive markers and commit metadata.
+- [x] Verify current public main is still the previously audited clean baseline, and each new reachable public commit introduces only reviewed sanitized files and GitHub noreply metadata.
+- [x] Verify the exact final PR-head CI runs the independent **20-test** binding suite, existing reference suites and compileall successfully.
 - [ ] Record an explicit decision on the exact PR head before merge and verify post-merge public main, reachable parent chain, metadata and CI.
 
-Publication/synchronization status: **PUBLIC_SYNC_PENDING** until every
-unchecked gate is verified. Passing local synthetic tests will not mean a
+Publication/synchronization status: **PUBLIC_SYNC_PENDING** pending final exact-head merge and post-merge checks. Candidate PR #22 initially passed CI run 35436850620 with the independent 20-test suite, the existing reference suites and compileall. This checklist update must itself pass exact-head CI before merge. Every new candidate commit before this checklist update had GitHub noreply-only author/committer metadata and was linked by single-parent ancestry to previously audited public main 4bdf310d514fa4ce0d00ec382467a1f79c14b3ab. Passing local synthetic tests will not mean a
 live source was fetched, a connector was authenticated, or a production
 agent was deployed. The publication itself grants no unrelated execution,
 permission, or deployment authority.
