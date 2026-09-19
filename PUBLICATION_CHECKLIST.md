@@ -457,7 +457,7 @@ live source was fetched, a connector was authenticated, or a production
 agent was deployed. The publication itself grants no unrelated execution,
 permission, or deployment authority.
 
-## 2026-09-19 Source acquisition and public pinned reader publication — candidate
+## 2026-09-19 Source acquisition and public pinned reader publication — merged and verified
 
 This separate bounded release contains a caller-selected adapter-fed local
 handoff, a **public-only, fixed-host read-only GitHub file reader** and
@@ -473,10 +473,10 @@ workflow, or a complete deployed agent.
 - [x] README, Architecture, Validation, Limitations, Sharing Guide and the two new support documents distinguish synthetic local PASS, one public read, independent authorization, provenance, revision freshness and production claims.
 - [x] Candidate PR #24 diff restricted to 14 reviewed public paths; audited added lines for private repository names, credentials, personal/workspace markers and IPv4; existing dependency blobs match audited public baseline. The new single-parent candidate ancestry is based on public main `54f0ddc3a08c2f50118a384bd1738142584cde65` and new commits have GitHub noreply author/committer metadata.
 - [x] Candidate PR #24 exact-head public CI run `35444341681` passed independent 17 synthetic-handoff and 12 mocked-reader tests, 20 Binding tests, all existing suites and compileall; public main was still `54f0ddc3a08c2f50118a384bd1738142584cde65`. This checklist-only candidate-head change requires its own new exact-head CI readback before merge.
-- [ ] Record the exact reviewed PR head, obtain merge and post-merge main/commit/CI readback; finalize checklist-only status in a separate tested commit.
+- [x] Reviewed exact PR #24 head `40729092fcf02e357fce0abeb657b1c8ee0f79b4`; squash-merged final audited tree as public main `fd1339f86bf4799c06684b8972a4070da0c54eb1`. Its sole parent is previously audited public main `54f0ddc3a08c2f50118a384bd1738142584cde65` and GitHub merge metadata uses noreply. Post-merge public CI `35444583431` and subsequent branch-ref cleanup CI `35444619839` passed the direct 17/12/20 suites, existing public regressions and compileall. The dedicated candidate branch ref was moved to that exact sanitized squash commit, so intermediary development commits are not reachable via default or that feature branch.
 
-Publication/synchronization status for this reader and handoff:
-**PUBLIC_SYNC_PENDING** until all unchecked gates pass. A local
+Publication/synchronization status for this bounded reader and handoff:
+**PUBLIC_SYNCED — REVIEWED_SQUASH_MERGED_AND_POST_MERGE_VERIFIED**. This checklist-only status writeback must pass its own public PR and post-merge CI before it is counted as fully recorded. A local
 `PASS` with `CALLER_SUPPLIED_ADAPTER` is not independent source
 attestation, permission verification, a production release or a general
 external-source guarantee. The live public-only GET is an intentionally
