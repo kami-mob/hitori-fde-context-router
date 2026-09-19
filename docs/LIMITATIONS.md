@@ -89,6 +89,34 @@ may be propagated in the returned failure mapping.
 
 The Explicit Source Read Gate described in [`SOURCE_READ_GATE.md`](SOURCE_READ_GATE.md) is therefore both a public behavioral contract and a small reproducible decision model, but it is not a complete retrieval or connector implementation. The Selective Recall runtime similarly demonstrates a bounded execution boundary without turning this repository into a complete production retrieval stack. The Work Gate demonstrates safety-independent classification without becoming a production authorization system. The Re-sync Gate demonstrates material-boundary classification without becoming a canonical-state retrieval or writeback engine. The Writeback Gate demonstrates an authority-sensitive candidate boundary without becoming a persistence or approval system.
 
+## Adapter-fed local gate and public HTTPS reader boundary
+
+The public acquisition handoff accepts a **caller-selected adapter** and
+locally verifies a receipt before recording the declared source for the
+existing in-memory Source Read Gate model. Its `PASS` label
+`CALLER_SUPPLIED_ADAPTER` is not independent evidence that the callback
+performed a real read, that the source was authentic or fresh, or that the
+caller had access permission. Fabricated but internally consistent values
+can pass local comparison. Connector authentication, permission validation,
+revision trust, audit trails and downstream operational decisions remain
+outside this reference.
+
+The narrow pinned public GitHub reader is the only published reference
+surface here that can perform a network request. It performs one read-only
+public Contents API GET with a fixed HTTPS host, explicit path allowlist
+and immutable commit; it does not accept a token or provide private access,
+mutations or broader integration. One isolated, opt-in public GET was
+observed successfully; routine CI uses mock HTTP and cannot establish
+continuous network availability. The reader does not establish that
+any evolving branch is currently up to date, that a user has private source
+access, or that an actual M365/Salesforce/other enterprise connector is
+configured. Its public response integrity checks are not a production
+provenance or authorization attestation.
+
+A local gate result from this experimental chain is not a product-level
+approval, a complete real-source grounding guarantee or evidence that
+STELLIGARE as a whole is deployed or suitable for unsupervised production.
+
 ## Canonical sources still matter
 
 A resolver can only be as reliable as the records it receives.
