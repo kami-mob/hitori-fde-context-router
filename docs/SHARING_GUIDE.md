@@ -24,6 +24,7 @@ The sanitized public repository contains:
 - dependency-free pure/local Source Read Gate outcome model
 - dependency-free pure/local Source Read Observation value-binding model
 - dependency-free pure/local Source Read Evidence hash-only carriage model
+- dependency-free pure/local Source Read Evidence Binding comparison model with 20 direct synthetic tests
 - pure/local Context Router preflight composition
 - dependency-free Context Selection planner
 - bounded Selective Recall runtime boundary
@@ -31,7 +32,7 @@ The sanitized public repository contains:
 - dependency-free pure/local Re-sync Gate material-boundary classifier
 - dependency-free pure/local Writeback Gate authority-boundary classifier
 - synthetic fixture data
-- reproducible public suites for resolver, Source Read Gate, Source Read Observation, Source Read Evidence, preflight, Context Selection, Selective Recall, Work Gate, Re-sync Gate, Writeback Gate, and synthetic lifecycle integration
+- reproducible public suites for resolver, Source Read Gate, Source Read Observation, Source Read Evidence, Source Read Evidence Binding, preflight, Context Selection, Selective Recall, Work Gate, Re-sync Gate, Writeback Gate, and synthetic lifecycle integration
 - GitHub Actions CI for all published public reference suites plus compileall
 - sanitized aggregate validation results from a larger implementation
 - dedicated private/integration source-read regression evidence: 10/10 PASS
@@ -53,6 +54,10 @@ For the public Source Read Observation code specifically, an accurate narrower c
 For the public Source Read Evidence code specifically, an accurate narrower claim is:
 
 > A dependency-free local model can derive immutable hash-only evidence from a fresh Source Read Observation result without re-exposing raw payload bytes or the raw source-version string, while making no claim that a real read occurred or that the Source Read Gate is satisfied.
+
+For the public Source Read Evidence Binding code specifically, an accurate narrower claim is:
+
+> A pure/local reference verifies that an exact caller-supplied evidence record matches one fresh internal derivation from a caller-supplied observation request, with fail-closed handling of malformed fields. Its 20 synthetic tests do not prove an actual external read, provenance, authenticity, freshness, source authorization, completeness, or Source Read Gate `PASS`.
 
 For the public Work Gate code specifically, an accurate narrower claim is:
 
