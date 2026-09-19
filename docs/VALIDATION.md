@@ -187,7 +187,8 @@ checks, malformed responses and integration with the local handoff. Default
 public CI runs these tests **independently**, without network access.
 
 A separate opt-in test of **one** public GitHub Contents HTTPS GET at a fixed
-public commit completed successfully in run `35442237163`. It checked the
+public commit completed successfully in public GitHub Actions run
+[`35444084250`](https://github.com/kami-mob/hitori-fde-context-router/actions/runs/35444084250). It checked the
 returned file bytes against an independently recorded Git blob SHA and
 passed the already-read receipt through the local handoff, without a
 second HTTP request. This proves the narrowly scoped public read worked
