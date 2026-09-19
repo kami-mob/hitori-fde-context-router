@@ -433,3 +433,27 @@ This section is the latest public-evidence status overlay for the Source Read Ev
 Synchronization state for the Source Read Evidence implementation: **MERGED_AND_POST_MERGE_VERIFIED**.
 
 This bookkeeping overlay grants no future executor, retry, staging-merge, automatic-import, production, permission, secret, or product-execution authority.
+
+## 2026-09-19 Source Read Evidence Binding publication review — candidate
+
+This is the current pending publication gate for a **pure/local, synthetic
+reference**. The earlier Source Read Evidence record and its public tests are
+not evidence that later supplied evidence still matches a fresh derivation.
+
+- [x] Publication Policy and Security Policy were read before drafting the public update.
+- [x] Public scope is bounded Why / What / Evidence, not a production integration, connector implementation, source-provenance guarantee, complete operational playbook or installation package.
+- [x] The existing public Source Read Observation, Source Read Evidence, Source Read Gate and corresponding tests are byte-identical to the reviewed dependency baseline of the new reference.
+- [x] The new code, tests and documentation use synthetic inputs and contain no private repository name, internal project identifier, customer/company/person, private URL/email, credential or production configuration.
+- [x] The three added source/test/documentation files are a standalone, reproducible pure/local model, with no external I/O or authority creation.
+- [x] The public workflow includes a **direct** `python tests/test_source_read_evidence_binding.py` step so older component suites cannot silently substitute for the new tests.
+- [x] README, Architecture, Validation, Limitations and Sharing Guide distinguish local evidence equality from actual external read, source provenance, Source Read Gate `PASS`, production use and permission to act.
+- [ ] Verify exact final public PR head, changed paths, current-tree privacy, sensitive markers and commit metadata.
+- [ ] Verify current public main is still the previously audited clean baseline, and each new reachable public commit introduces only reviewed sanitized files and GitHub noreply metadata.
+- [ ] Verify the exact final PR-head CI runs the independent **20-test** binding suite, existing reference suites and compileall successfully.
+- [ ] Record an explicit decision on the exact PR head before merge and verify post-merge public main, reachable parent chain, metadata and CI.
+
+Publication/synchronization status: **PUBLIC_SYNC_PENDING** until every
+unchecked gate is verified. Passing local synthetic tests will not mean a
+live source was fetched, a connector was authenticated, or a production
+agent was deployed. The publication itself grants no unrelated execution,
+permission, or deployment authority.
