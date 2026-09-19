@@ -82,6 +82,23 @@ This surface does **not** perform the external read, choose or authenticate a co
 
 The record deliberately excludes raw payload bytes and the raw source-version string. It does not accept caller-supplied precomputed hashes, perform external I/O, authenticate or authorize a source, establish freshness or completeness, or evaluate the Source Read Gate. An `EVIDENCED` result is therefore only immutable hash-only carriage of a local observation result; it is not proof that a real read occurred and is not a Source Read Gate `PASS`. See [`SOURCE_READ_EVIDENCE.md`](SOURCE_READ_EVIDENCE.md).
 
+### Source Read Evidence Binding support boundary
+
+[`reference/source_read_evidence_binding.py`](../reference/source_read_evidence_binding.py)
+is a separate pure/local check layered on Source Read Evidence. It accepts one
+caller-supplied observation request and an exact `SourceReadEvidence` record,
+calls `derive_evidence()` internally once after the supplied evidence passes
+strict type/field checks, and compares all four local evidence values against
+that fresh derivation. A `BINDING_MATCHED` result means only those values match;
+malformed or mismatched inputs yield generic `DATA_ERROR`.
+
+This support layer is **not** another Source Read Gate and does not change
+the step-0-through-step-6 routing order. It does not perform a real external
+read, authenticate source provenance, check permissions or freshness, or make
+a source-read requirement `PASS`. See
+[`SOURCE_READ_EVIDENCE_BINDING.md`](SOURCE_READ_EVIDENCE_BINDING.md) for its
+exact in-memory API and boundary.
+
 ## 1. Resolution Kernel
 
 Resolve the smallest relevant decision scope before broad context retrieval:
