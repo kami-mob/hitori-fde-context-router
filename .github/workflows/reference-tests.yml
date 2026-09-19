@@ -28,9 +28,6 @@ jobs:
         run: python tests/test_github_public_pinned_reader.py
       - name: Resolve one decision from same SHA-pinned public source bytes (synthetic)
         run: python tests/test_pinned_public_decision_preflight.py
-      - name: One pinned public decision HTTPS smoke (one-time public branch)
-        if: github.event_name == 'push' && github.ref == 'refs/heads/public-same-source-decision-reference-20260919' && github.event.head_commit.message == 'Run single public decision smoke once'
-        run: python tests/test_pinned_public_decision_live_smoke.py
       - name: Run Context Router preflight suite
         run: python tests/test_context_router_preflight.py
       - name: Run Context Selection suite
