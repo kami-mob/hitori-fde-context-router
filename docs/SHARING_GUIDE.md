@@ -65,6 +65,10 @@ For the adapter-fed acquisition and pinned public-reader reference specifically,
 
 > A bounded local handoff can pass one explicitly selected source receipt through evidence derivation, binding and the modeled Source Read Gate. A separate token-free, read-only adapter can request a named public GitHub file at an immutable commit. Synthetic tests cover the failure boundaries, and a one-file public HTTPS smoke confirmed one such read. Neither local gate `PASS` nor that smoke proves private source access, caller permissions, independently trusted provenance, current revision freshness, enterprise integration or a production agent.
 
+For the pinned public decision preflight reference specifically, an accurate narrower claim is:
+
+> A read-only reference can obtain one public GitHub decision JSON file at an explicitly pinned immutable commit, independently check the expected blob, apply local evidence and gate checks to the already-fetched receipt, and classify a decision parsed from those SAME bytes. Twelve synthetic tests and a separate one-file public HTTPS smoke support this limited claim. It does not independently establish private-source access, caller permissions, source freshness, a production-ready connector or authority to act.
+
 For the public Work Gate code specifically, an accurate narrower claim is:
 
 > A dependency-free local classifier can fail closed on malformed request objects and keep explicitly supplied production/permission triggers independent of upstream decision success without executing work or creating authority.
