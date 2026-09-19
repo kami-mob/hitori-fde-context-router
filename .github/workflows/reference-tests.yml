@@ -26,9 +26,6 @@ jobs:
         run: python tests/test_source_read_acquisition_handoff.py
       - name: Run pinned public GitHub reader mocked HTTPS suite
         run: python tests/test_github_public_pinned_reader.py
-      - name: Public-only pinned HTTPS one-read smoke (explicit one-time commit)
-        if: github.event_name == 'push' && github.ref == 'refs/heads/public-source-acquisition-pinned-reader-20260919' && github.event.head_commit.message == 'Public HTTPS smoke once'
-        run: python tests/test_github_public_pinned_live_smoke.py
       - name: Run Context Router preflight suite
         run: python tests/test_context_router_preflight.py
       - name: Run Context Selection suite
