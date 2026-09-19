@@ -22,7 +22,7 @@ Explicit resolution, source-read gates, and fail-closed states reduce some class
 
 ## The public reference code is deliberately bounded
 
-This repository now contains eleven dependency-free Python reference surfaces:
+This repository contains thirteen standard-library Python reference surfaces, including one bounded public-network reader; only that reader performs direct network I/O:
 
 - `reference/minimal_resolver.py` demonstrates the **decision-resolution contract**.
 - `reference/source_read_gate.py` demonstrates **pure/local Source Read Gate outcome logic** from caller-supplied request metadata and `read_log`.
