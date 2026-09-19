@@ -434,9 +434,9 @@ Synchronization state for the Source Read Evidence implementation: **MERGED_AND_
 
 This bookkeeping overlay grants no future executor, retry, staging-merge, automatic-import, production, permission, secret, or product-execution authority.
 
-## 2026-09-19 Source Read Evidence Binding publication review — candidate
+## 2026-09-19 Source Read Evidence Binding publication review — merged and verified
 
-This is the current pending publication gate for a **pure/local, synthetic
+This is the verified publication gate for a **pure/local, synthetic
 reference**. The earlier Source Read Evidence record and its public tests are
 not evidence that later supplied evidence still matches a fresh derivation.
 
@@ -450,9 +450,9 @@ not evidence that later supplied evidence still matches a fresh derivation.
 - [x] Verify exact final public PR head, changed paths, current-tree privacy, sensitive markers and commit metadata.
 - [x] Verify current public main is still the previously audited clean baseline, and each new reachable public commit introduces only reviewed sanitized files and GitHub noreply metadata.
 - [x] Verify the exact final PR-head CI runs the independent **20-test** binding suite, existing reference suites and compileall successfully.
-- [ ] Record an explicit decision on the exact PR head before merge and verify post-merge public main, reachable parent chain, metadata and CI.
+- [x] Owner authorized merge, exact PR #22 head `5ddb9a02a0993aa08717bef0ac8f8e904c5883df` was merged as `7e3f3dc27a712f22a8f5366ed15951467e6d3bb3`, and post-merge public main, parent chain, noreply metadata and CI run `35437008034` were verified.
 
-Publication/synchronization status: **PUBLIC_SYNC_PENDING** pending final exact-head merge and post-merge checks. Candidate PR #22 initially passed CI run 35436850620 with the independent 20-test suite, the existing reference suites and compileall. This checklist update must itself pass exact-head CI before merge. Every new candidate commit before this checklist update had GitHub noreply-only author/committer metadata and was linked by single-parent ancestry to previously audited public main 4bdf310d514fa4ce0d00ec382467a1f79c14b3ab. Passing local synthetic tests will not mean a
+Publication/synchronization status for the binding runtime/content: **PUBLIC_SYNCED — MERGED_AND_POST_MERGE_VERIFIED**. Public PR #22 exact reviewed head passed Reference Tests (run `35436908579`); the merge commit `7e3f3dc27a712f22a8f5366ed15951467e6d3bb3` passed post-merge Reference Tests (run `35437008034`), including the direct 20-test binding suite, all existing public component suites and compileall. The merge has exactly the audited baseline and reviewed candidate as parents and uses GitHub noreply/verified metadata. Eleven new candidate commits were linked by single-parent ancestry to previously audited public main `4bdf310d514fa4ce0d00ec382467a1f79c14b3ab`, with GitHub noreply-only author/committer metadata. The final checklist-only writeback must pass its own public CI and post-merge readback before the public evidence synchronization task is closed. Passing local synthetic tests will not mean a
 live source was fetched, a connector was authenticated, or a production
 agent was deployed. The publication itself grants no unrelated execution,
 permission, or deployment authority.
