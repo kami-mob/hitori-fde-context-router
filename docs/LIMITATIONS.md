@@ -117,6 +117,10 @@ A local gate result from this experimental chain is not a product-level
 approval, a complete real-source grounding guarantee or evidence that
 STELLIGARE as a whole is deployed or suitable for unsupervised production.
 
+## Same-file public read-to-decision reference is not execution authority
+
+The optional pinned public snapshot preflight binds a local decision classification to the exact bytes of one explicitly selected public GitHub file and independently expected immutable blob hash, then uses the existing local Binding and Source Read Gate model. The caller still chooses the source, pin and expected digest; a compromised injected test transport cannot be independently attested as genuine by this code. The reference does not establish private repository access, Microsoft 365/Salesforce permissions, freshness of an evolving branch, completeness of a business decision registry, or an authenticated human approval. A single public synthetic HTTPS smoke is not an enterprise connector validation. Its `RESOLVED` is a classification of selected public bytes only, not a trusted product decision, ACTIVE/LOCKED writeback, production action or permission grant. No workflow is triggered or persistent state changed.
+
 ## Canonical sources still matter
 
 A resolver can only be as reliable as the records it receives.

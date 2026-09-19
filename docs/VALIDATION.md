@@ -198,6 +198,18 @@ freshness of changing branches, ongoing network reliability, or a
 deployed agent. The local Gate `PASS` remains explicitly labeled
 `CALLER_SUPPLIED_ADAPTER` and is not independent provenance attestation.
 
+### One pinned public-file read to same-byte local decision
+
+```bash
+python tests/test_pinned_public_decision_preflight.py
+# Opt-in network smoke, outside normal CI:
+python tests/test_pinned_public_decision_live_smoke.py
+```
+
+Twelve direct no-network tests check that one declared public file is read at most once, that an independent expected Git blob SHA matches the received bytes, that the **same** already-fetched receipt reaches the modeled evidence Binding/Gate, and that only those source bytes are parsed for the scoped decision. They reject malformed requests, invalid JSON/duplicate keys, source/expected-hash drift, stale/unknown/conflicting decisions and hostile transport failures without manufacturing authority or leaking raw data. The default public CI executes this 12-test suite independently.
+
+A separately triggered public-repository GitHub Actions run `35447805768` successfully performed **one real public HTTPS GET** at the pinned synthetic fixture, checked the expected file blob and resolved the documented synthetic decision from those same fetched bytes. This one isolated public-file observation does not establish permissions to private/enterprise sources, trust in a caller-supplied transport, current freshness of changing branches, a general provenance attestation, operational safety or an installed product.
+
 ### Context Router preflight composition
 
 ```bash

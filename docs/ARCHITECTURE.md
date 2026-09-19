@@ -119,6 +119,10 @@ through step-6 ordering or existing permission/production gates. See
 [`SOURCE_READ_ACQUISITION_HANDOFF.md`](SOURCE_READ_ACQUISITION_HANDOFF.md)
 and [`GITHUB_PUBLIC_PINNED_READER.md`](GITHUB_PUBLIC_PINNED_READER.md).
 
+### One-source-byte-bound public decision reference
+
+[`reference/pinned_public_decision_preflight.py`](../reference/pinned_public_decision_preflight.py) demonstrates a separate optional read-to-decision path. An independently selected expected Git blob digest must match the exact bytes returned by one explicitly pinned PUBLIC file read. The already-fetched receipt then passes the existing local Binding and Source Read Gate models, after which decision records are parsed ONLY from those same verified bytes and sent to the existing resolver for one declared domain/subject/field/date. The model does not permit an unrelated caller-supplied record list to substitute for the selected source. Its output is a non-authoritative local classification, not a new step, live permission attestation, production trigger, ACTIVE/LOCKED writeback or replacement for current-source freshness checks. See [`PINNED_PUBLIC_DECISION_PREFLIGHT.md`](PINNED_PUBLIC_DECISION_PREFLIGHT.md).
+
 ## 1. Resolution Kernel
 
 Resolve the smallest relevant decision scope before broad context retrieval:

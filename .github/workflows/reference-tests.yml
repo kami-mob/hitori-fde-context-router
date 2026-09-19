@@ -26,6 +26,8 @@ jobs:
         run: python tests/test_source_read_acquisition_handoff.py
       - name: Run pinned public GitHub reader mocked HTTPS suite
         run: python tests/test_github_public_pinned_reader.py
+      - name: Resolve one decision from same SHA-pinned public source bytes (synthetic)
+        run: python tests/test_pinned_public_decision_preflight.py
       - name: Run Context Router preflight suite
         run: python tests/test_context_router_preflight.py
       - name: Run Context Selection suite

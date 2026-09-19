@@ -161,6 +161,7 @@ Operational templates, workspace-specific installation materials, migration pack
 - `docs/SOURCE_READ_EVIDENCE_BINDING.md` — pure/local fail-closed check that supplied evidence matches one fresh derivation
 - `docs/SOURCE_READ_ACQUISITION_HANDOFF.md` — bounded adapter-fed source selection, local evidence validation and gate handoff; no independent permission proof
 - `docs/GITHUB_PUBLIC_PINNED_READER.md` — narrowly scoped read-only public GitHub file adapter at an immutable commit; no private access or credentials
+- `docs/PINNED_PUBLIC_DECISION_PREFLIGHT.md` — one pinned public file read bound to the SAME bytes used for local decision resolution
 - `docs/DECISION_RESOLUTION_SPEC.md` — current-decision resolution rules
 - `docs/CONTEXT_ROUTER_PREFLIGHT.md` — pure/local composition of the gate and the resolver (steps 0–1)
 - `docs/CONTEXT_SELECTION.md` — pure/local Context Router planning reference (step 2)
@@ -180,6 +181,7 @@ Operational templates, workspace-specific installation materials, migration pack
 - `reference/source_read_evidence_binding.py` — pure/local evidence-to-fresh-derivation comparison; does not prove external source provenance
 - `reference/source_read_acquisition_handoff.py` — pure/local fail-closed adapter callback composition with declared-source gate
 - `reference/github_public_pinned_reader.py` — fixed-host read-only public GitHub Contents GET at an explicitly pinned immutable commit, with no credential support
+- `reference/pinned_public_decision_preflight.py` — local decision classification parsed exclusively from the separately expected-SHA-checked public file bytes
 - `reference/context_router_preflight.py` — pure/local composition sequencing `source_read_gate.evaluate` then `minimal_resolver.resolve_current`; no new I/O or behavior
 - `reference/context_selection.py` — dependency-free Context Router step 2 planner over caller-scored, caller-tiered candidates
 - `runtime/selective_recall.py` — dependency-free step 3 boundary that executes only a validated selection plan through a caller-supplied loader
@@ -195,6 +197,8 @@ Operational templates, workspace-specific installation materials, migration pack
 - `tests/test_source_read_acquisition_handoff.py` — 17 synthetic-adapter tests for declared-source bounds and fail-closed local gate behavior
 - `tests/test_github_public_pinned_reader.py` — 12 mocked-HTTPS tests for the restricted public GitHub adapter
 - `tests/test_github_public_pinned_live_smoke.py` — opt-in one-file public GitHub HTTPS smoke; not part of routine CI
+- `tests/test_pinned_public_decision_preflight.py` — 12 synthetic tests for same-byte read-to-resolution and fail-closed boundaries
+- `tests/test_pinned_public_decision_live_smoke.py` — opt-in single public-file read-to-local-decision smoke; not routine CI
 - `tests/test_context_router_preflight.py` — composition boundary tests for the gate-then-resolver sequencing
 - `tests/test_context_selection.py` — Context Selection planner tests (HOT/WARM/COLD selection rules and carve-outs)
 - `tests/test_selective_recall_runtime.py` — Selective Recall plan-validation / bounded-loading tests
@@ -237,7 +241,7 @@ The code in this repository is intentionally small.
 - `reference/resync_gate.py` demonstrates the step 5 material-boundary boundary: it validates the request shape and returns `RESYNC_REQUIRED` when any supplied re-sync signal is active, without retrieving or mutating external state. See [`docs/RESYNC_GATE.md`](docs/RESYNC_GATE.md).
 - `reference/writeback_gate.py` demonstrates the step 6 writeback boundary: it validates caller-supplied origin/status/importance, rejects AI-proposed `ACTIVE` / `LOCKED` status, and returns only a non-authoritative local candidate classification. See [`docs/WRITEBACK_GATE.md`](docs/WRITEBACK_GATE.md).
 
-This repository now contains thirteen standard-library Python reference surfaces. The resolver, Source Read Gate, Source Read Observation, Source Read Evidence, preflight, Context Selection, Work Gate, Re-sync Gate, and Writeback Gate do not perform external connector I/O. The Selective Recall runtime contains no connector discovery or connector-specific code; if its caller-supplied loader performs I/O, that I/O is the caller's responsibility. In particular, `source_read_gate.py` does **not** prove that a repository or document was really fetched; the caller supplies the read evidence that the model evaluates. `source_read_observation.py` can bind caller-supplied identity/version/payload values deterministically, but it likewise cannot prove that those values came from a real read or that the named source is authentic, fresh, authorized, complete, or externally proven. `source_read_evidence.py` only freezes a fresh observation result into a hash-only record and cannot turn that local value binding into proof of a real read or a Source Read Gate `PASS`. The runtime also does not independently prove the provenance, safety, or correctness of a loader implementation. The Work Gate likewise does not detect production/permission conditions on its own and a `PROCEED` result is not permission to execute work. The Re-sync Gate does not detect material boundaries on its own, fetch canonical state, or perform writeback; `RESYNC_REQUIRED` / `NOT_REQUIRED` are classification outcomes only. The Writeback Gate does not persist anything, infer confirmation on its own, or grant authoritative status; `WRITEBACK_CANDIDATE` is a local classification only.
+This repository now contains fourteen standard-library Python reference surfaces. The resolver, Source Read Gate, Source Read Observation, Source Read Evidence, preflight, Context Selection, Work Gate, Re-sync Gate, and Writeback Gate do not perform external connector I/O. The Selective Recall runtime contains no connector discovery or connector-specific code; if its caller-supplied loader performs I/O, that I/O is the caller's responsibility. In particular, `source_read_gate.py` does **not** prove that a repository or document was really fetched; the caller supplies the read evidence that the model evaluates. `source_read_observation.py` can bind caller-supplied identity/version/payload values deterministically, but it likewise cannot prove that those values came from a real read or that the named source is authentic, fresh, authorized, complete, or externally proven. `source_read_evidence.py` only freezes a fresh observation result into a hash-only record and cannot turn that local value binding into proof of a real read or a Source Read Gate `PASS`. The runtime also does not independently prove the provenance, safety, or correctness of a loader implementation. The Work Gate likewise does not detect production/permission conditions on its own and a `PROCEED` result is not permission to execute work. The Re-sync Gate does not detect material boundaries on its own, fetch canonical state, or perform writeback; `RESYNC_REQUIRED` / `NOT_REQUIRED` are classification outcomes only. The Writeback Gate does not persist anything, infer confirmation on its own, or grant authoritative status; `WRITEBACK_CANDIDATE` is a local classification only.
 
 Run locally:
 
@@ -247,7 +251,9 @@ python tests/test_source_read_evidence.py
 python tests/test_source_read_evidence_binding.py
 python tests/test_source_read_acquisition_handoff.py
 python tests/test_github_public_pinned_reader.py
+python tests/test_pinned_public_decision_preflight.py
 # Optional network smoke for one public pinned file (no credentials):
+# python tests/test_pinned_public_decision_live_smoke.py
 # python tests/test_github_public_pinned_live_smoke.py
 python tests/test_reference_lifecycle_integration.py
 python tests/test_writeback_gate.py
@@ -272,6 +278,10 @@ The GitHub Actions workflow in this repository ([`.github/workflows/reference-te
 ## Public Source Read acquisition: bounded demonstration
 
 [`reference/source_read_acquisition_handoff.py`](reference/source_read_acquisition_handoff.py) accepts an externally selected adapter and locally checks a well-typed returned receipt against fresh evidence before recording only the declared source for the model Source Read Gate. Its local `PASS` is labeled `CALLER_SUPPLIED_ADAPTER`: a forged callback can claim a read, so this result is not independent evidence of authentication, provenance, permissions or freshness. The optional [`reference/github_public_pinned_reader.py`](reference/github_public_pinned_reader.py) restricts one concrete read-only HTTPS adapter to the public GitHub Contents API, an explicit path allowlist and a pinned immutable commit. It has no private-repository authentication or credential handling. The direct 17-test synthetic-handoff and 12-test mocked-HTTPS suites pass in public CI. A separately run one-file public HTTPS smoke is recorded in [`docs/GITHUB_PUBLIC_PINNED_READER.md`](docs/GITHUB_PUBLIC_PINNED_READER.md); neither that isolated read nor the synthetic suites prove a deployed agent, private or enterprise source access, or general Source Read Gate `PASS`. See [`docs/SOURCE_READ_ACQUISITION_HANDOFF.md`](docs/SOURCE_READ_ACQUISITION_HANDOFF.md) for the trust boundary.
+
+## Same-source public decision classification: bounded reference
+
+[`reference/pinned_public_decision_preflight.py`](reference/pinned_public_decision_preflight.py) verifies a reviewed expected Git blob against the EXACT bytes returned by one immutable public GitHub file read. It checks that same receipt against the local evidence/gate model and parses decision records exclusively from the same returned bytes, rather than accepting unrelated caller-supplied records. The public CI runs 12 no-network synthetic tests. A separate one-file public HTTPS smoke [is recorded](docs/PINNED_PUBLIC_DECISION_PREFLIGHT.md), but neither its `RESOLVED` classification nor its local `PASS` is an authorization to act, independent proof of private/enterprise permissions, current branch freshness, or production validation.
 
 ## Status
 
