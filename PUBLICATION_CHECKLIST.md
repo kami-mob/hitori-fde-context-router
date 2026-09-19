@@ -471,8 +471,8 @@ workflow, or a complete deployed agent.
 - [x] A separate public-branch GitHub Actions run [35444084250](https://github.com/kami-mob/hitori-fde-context-router/actions/runs/35444084250) executed a single no-token HTTPS GET for one explicitly pinned public file, checked its Git blob SHA, then passed its already-read receipt through the local gate without a second GET; that one-file evidence is explicitly narrower than private/enterprise connector verification.
 - [x] The standard reference CI retains independent 17-test synthetic acquisition and 12-test mocked-HTTPS reader suites and does not run the network smoke by default.
 - [x] README, Architecture, Validation, Limitations, Sharing Guide and the two new support documents distinguish synthetic local PASS, one public read, independent authorization, provenance, revision freshness and production claims.
-- [ ] Audit the exact final PR-head changed paths and every added line, current tree, reachable new Git commit chain and metadata for publication/privacy boundary.
-- [ ] Verify the exact final PR-head public CI (independent 17/12 tests plus existing suites and compileall) and that public main did not drift from audited base.
+- [x] Candidate PR #24 diff restricted to 14 reviewed public paths; audited added lines for private repository names, credentials, personal/workspace markers and IPv4; existing dependency blobs match audited public baseline. The new single-parent candidate ancestry is based on public main `54f0ddc3a08c2f50118a384bd1738142584cde65` and new commits have GitHub noreply author/committer metadata.
+- [x] Candidate PR #24 exact-head public CI run `35444341681` passed independent 17 synthetic-handoff and 12 mocked-reader tests, 20 Binding tests, all existing suites and compileall; public main was still `54f0ddc3a08c2f50118a384bd1738142584cde65`. This checklist-only candidate-head change requires its own new exact-head CI readback before merge.
 - [ ] Record the exact reviewed PR head, obtain merge and post-merge main/commit/CI readback; finalize checklist-only status in a separate tested commit.
 
 Publication/synchronization status for this reader and handoff:
