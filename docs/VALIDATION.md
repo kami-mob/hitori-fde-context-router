@@ -79,7 +79,7 @@ The public repository does not include workspace-specific source names, paths, p
 
 ## Public reproducible reference checks
 
-The public repository contains eleven small dependency-free Python reference surfaces.
+The public repository contains thirteen standard-library Python reference surfaces; the pinned public GitHub reader can perform bounded network I/O, while the remaining references have no built-in network client.
 
 ### Decision resolver
 
