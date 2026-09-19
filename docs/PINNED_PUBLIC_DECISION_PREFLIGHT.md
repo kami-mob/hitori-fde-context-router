@@ -76,10 +76,12 @@ opt-in public-only smoke script `tests/test_pinned_public_decision_live_smoke.py
 performs exactly one token-free pinned GitHub Contents GET for a previously
 reviewed PUBLIC synthetic JSON fixture. It checks the received bytes against
 an independently recorded expected blob SHA and resolves one decision from
-those SAME bytes without a second GET. Run it only with explicit public
-network availability, separately from default deterministic CI; record the
-public run evidence before claiming the network check passed in this
-repository. Even a passing public smoke does not demonstrate private
+those SAME bytes without a second GET. It ran once in this public repository's candidate-branch GitHub Actions
+run `35447805768` and passed: one public HTTPS GET at the pinned public
+synthetic fixture, verified expected file blob and one locally resolved
+decision from the SAME returned bytes. That opt-in network step was then
+removed from default CI, leaving the separate public-smoke script available
+for explicit re-verification. Even a passing public smoke does not demonstrate private
 repository rights, dynamic source freshness, independent human permission
 attestation, enterprise connector access or production action.
 This module introduces no scheduler, credentials, retry, persistent state
