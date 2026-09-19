@@ -79,7 +79,7 @@ The public repository does not include workspace-specific source names, paths, p
 
 ## Public reproducible reference checks
 
-The public repository contains eight small dependency-free Python reference surfaces.
+The public repository contains eleven small dependency-free Python reference surfaces.
 
 ### Decision resolver
 
@@ -145,6 +145,28 @@ The suite contains **17 tests** for the pure/local Source Read Evidence boundary
 - no Source Read Gate interaction or PASS generation.
 
 These tests prove only local derivation and data-minimized carriage of a fresh caller-supplied observation result. They do **not** prove that an external source was actually read, that the named source produced the bytes, or that the source is authentic, fresh, authorized, complete, externally proven, or sufficient for Source Read Gate `PASS`.
+
+### Source Read Evidence Binding boundary
+
+```bash
+python tests/test_source_read_evidence_binding.py
+```
+
+The suite contains **20 tests** for the pure/local Source Read Evidence
+Binding check. It verifies the exact request/evidence types, safe reading of
+both wrapper fields, completion of all four supplied and all four freshly
+derived evidence-field reads before type validation, rejection of malformed
+exact dataclass instances, raising descriptors and hostile comparison values,
+and exactly one internal derivation for a valid supplied record. Invalid
+supplied evidence is rejected without deriving anything. Only the generic
+`DATA_ERROR` and exact `BINDING_MATCHED` result mappings are returned.
+
+This suite establishes local value agreement between caller-supplied evidence
+and a fresh internal derivation of a caller-supplied observation request.
+It does **not** establish a real external read, provenance, authenticity,
+authorization, freshness, completeness, Source Read Gate `PASS`, or
+production/integration correctness. It is invoked as an independent command
+by the public Reference Tests workflow.
 
 ### Context Router preflight composition
 
